@@ -1,0 +1,38 @@
+{% extends "basic.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock title %}
+{% block body %}
+<main class="main">
+
+  <!-- Page Title -->
+  <div class="page-title dark-background" data-aos="fade" style="background-image: url({% static 'assets/img/write.jpg' %});">
+    <div class="container text-center">
+      <h1>{{ post.title }}</h1>
+      <p>
+        <i class="bi bi-person"></i> {{ post.author_name }} | 
+        <i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Blog Content -->
+  <section class="blog-content section py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+          {% if post.image %}
+            <img src="{{ post.image.url }}" class="img-fluid rounded mb-4" alt="{{ post.title }}">
+          {% endif %}
+
+          <div class="post-body">
+            <p>{{ post.content|linebreaks }}</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock body %}
