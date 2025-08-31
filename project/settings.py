@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-import django_heroku
+import django_heroku # pyright: ignore[reportMissingImports]
 from pathlib import Path
 from django.contrib.messages import constants as messages
 import os
@@ -46,12 +46,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',  # <-- this one handles APPEND_SLASH
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'project.urls'
 
@@ -133,6 +134,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MESSAGES_TAGS={
     messages.ERROR:"danger"
 }
+
+
+# Ensure Django redirects /path → /path/
+APPEND_SLASH = True
 
 
 # Activate Django-Heroku.
