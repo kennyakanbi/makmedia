@@ -38,42 +38,42 @@
     
 {% endblock stylecss %}
 
- 
-</head>
-<body class="index-page">
-  <header id="header" class="header d-flex align-items-center position-relative">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-      <a href="/" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img src="{% static 'assets/img/logo_3.jpg' %}" alt="AgriCulture">
-        <!-- <h1 class="sitename">AgriCulture</h1>  -->
-      </a>
+<header id="header" class="header d-flex align-items-center position-relative">
+  <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="/" class="active">Home</a></li>
-          <li><a href="/about">About Us</a></li>
-          <li><a href="/services">Our Services</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li class="dropdown"><a href="#"><span>Internship Program</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              {% if not request.user.is_authenticated %}
-          <li><a href="/auth/signup/"><i class="bi bi-person navicon"></i> Signup</a>
-          <li><a href="/auth/login/"><i class="bi bi-person navicon"></i> Login</a>
-          {% else %}
-        <li><a href="/auth/logout/"><i class="bi bi-person navicon"></i> Logout</a>
-          {% endif %}      
+    <a href="/" class="logo d-flex align-items-center">
+      <img src="{% static 'assets/img/logo_3.jpg' %}" alt="AgriCulture">
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a href="/" class="active">Home</a></li>
+        <li><a href="/about/">About Us</a></li>
+        <li><a href="/services/">Our Services</a></li>
+        <li><a href="/blog/">Blog</a></li>
+
+        <li class="dropdown">
+          <a href="#"><span>Internship Program</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <ul>
+            {% if not request.user.is_authenticated %}
+              <li><a href="/auth/signup/"><i class="bi bi-person navicon"></i> Signup</a></li>
+              <li><a href="/auth/login/"><i class="bi bi-person navicon"></i> Login</a></li>
+            {% else %}
+              <li><a href="/auth/logout/"><i class="bi bi-person navicon"></i> Logout</a></li>
+            {% endif %}
           </ul>
-         {% if not request.user.is_authenticated %}
-          <li><a href="/contact">Contact</a></li>           
-         {% else %}
-         <li><a href="/contact">Contact</a></li>
-        </ul>
-          {% endif %}        
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-    </div>
-  </header>
+        </li>
+
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+
+      <!-- Mobile menu toggle -->
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
+
+  </div>
+</header>
+
 
   {% block hero %}
 
@@ -157,7 +157,7 @@
           <div class="col-lg-2 col-md-3 footer-links">
            <h4>Resources</h4>
             <ul>
-              <li><a href="blog_list/">Blog Post</a></li>
+              <li><a href="/blog">Blog Post</a></li>
               <li><a href="#">News Letter</a></li>
               <li><a href="#">Webners/Workshop</a></li>
               <li><a href="#">Video Tutorials</a></li>
