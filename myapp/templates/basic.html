@@ -17,14 +17,26 @@
 
   <!-- Favicons -->
   <link href="{% static 'assets/img/desktop.jpg' %}" rel="apple-touch-icon">
+  <link href="{% static 'assets/img/phone.png' %}" rel="icon">
+<!-- Favicon (legacy) -->
+<link rel="shortcut icon" href="{% static 'favicons/favicon.ico' %}?v=2" type="image/x-icon">
 
-<!-- Favicons -->
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/img/favicon-16x16.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/img/favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/img/android-chrome-192x192.png' %}">
-<link rel="icon" type="image/png" sizes="512x512" href="{% static 'assets/img/android-chrome-512x512.png' %}">
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/img/apple-touch-icon.png' %}">
-<link rel="manifest" href="{% static 'assets/img/site.webmanifest' %}">
+<!-- PNG favicons -->
+<link rel="icon" href="{% static 'favicons/favicon-32x32.png' %}?v=2" sizes="32x32" type="image/png">
+<link rel="icon" href="{% static 'favicons/favicon-16x16.png' %}?v=2" sizes="16x16" type="image/png">
+
+<!-- iOS home screen -->
+<link rel="apple-touch-icon" href="{% static 'favicons/apple-touch-icon.png' %}?v=2" sizes="180x180">
+
+<!-- Safari pinned tab (optional) -->
+<link rel="mask-icon" href="{% static 'favicons/safari-pinned-tab.svg' %}?v=2" color="#0ea5e9">
+
+<!-- Web App Manifest (for Android/Chromium) -->
+<link rel="manifest" href="{% static 'favicons/site.webmanifest' %}?v=2">
+
+<meta name="theme-color" content="#0ea5e9">
+
+
 
    <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
