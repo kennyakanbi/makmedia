@@ -63,14 +63,17 @@ def internshipdetails(request):
  
 def contact(request):
     if request.method == "POST":
-        fname= request.POST.get('name') 
-        femail= request.POST.get('email')
-        fphoneno= request.POST.get('num') 
-        fdesc= request.POST.get('desc')
-        query=Contact(name=fname, email=femail, phonenumber=fphoneno, description=fdesc)
+        fname = request.POST.get('name') 
+        femail = request.POST.get('email')
+        fdesc = request.POST.get('message')   # ✅ match template
+        fphoneno = request.POST.get('phone')  # if you want to add a phone field later
+
+        query = Contact(name=fname, email=femail, description=fdesc)
         query.save()
-        messages.success(request, "Thank's for contacting us/ We will get by you soon!")
+        messages.success(request, "Thanks for contacting us! We’ll get back to you soon.")
         return redirect('/contact')
     return render(request, 'contact.html')
+
+
 
     

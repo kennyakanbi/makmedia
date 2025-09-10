@@ -1,22 +1,27 @@
 from django.db import models
 from django.utils.text import slugify
 
-
 class Contact(models.Model):
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=100)
     email = models.EmailField()
-    phonenumber = models.CharField(max_length=15)  # increased for intl. numbers
-    description = models.TextField(null=True, blank=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Contact"
+        verbose_name_plural = "Contacts"
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.email}"
 
 
 class Blog(models.Model):
     title = models.CharField(max_length=150)
-    slug = models.SlugField(unique=True, blank=True, null=True)  # SEO-friendly
-    description = models.TextField()  # Short summary/intro
-    content = models.TextField()  # Full blog content
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    description = models.TextField()
+    content = models.TextField()
     author_name = models.CharField(max_length=50)
     image = models.ImageField(upload_to="blog_images/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -29,7 +34,6 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
 
-    # Auto-generate slug if not provided
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
@@ -38,7 +42,7 @@ class Blog(models.Model):
 
 class Internship(models.Model):
     fullname = models.CharField(max_length=60)
-    usn = models.CharField(max_length=60, unique=True)  # unique student ID
+    usn = models.CharField(max_length=60, unique=True)
     email = models.EmailField(max_length=100)
     college_name = models.CharField(max_length=100)
     offer_status = models.CharField(max_length=60, choices=[
@@ -48,7 +52,7 @@ class Internship(models.Model):
     ])
     start_date = models.DateField()
     end_date = models.DateField()
-    proj_report = models.TextField(blank=True, null=True)  
+    proj_report = models.TextField(blank=True, null=True)
     timeStamp = models.DateTimeField(auto_now_add=True, blank=True)
 
     class Meta:

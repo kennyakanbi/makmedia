@@ -14,98 +14,67 @@
         </p>
         <nav class="breadcrumbs">
           <ol>
-            <li><a href="index.html">Home</a></li>
+            <li><a href="{% url 'home' %}">Home</a></li>  <!-- Better: use url tag -->
             <li class="current">Contact</li>
           </ol>
         </nav>
       </div>
     </div><!-- End Page Title -->
 
-      {% for message in messages %}
-            <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
-                <strong> {{message}}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-       {% endfor %}
+    <!-- Django messages -->
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact section">
+    <section class="py-12 bg-gray-50">
+      <div class="container mx-auto text-center max-w-3xl">
+        <h2 class="text-3xl font-bold mb-4 text-gray-900">Let’s Work Together</h2>
+        <p class="text-gray-700 mb-8">
+          Whether you’re looking for a media campaign, a stunning website, powerful video content, 
+          or tech training to upskill your team, MakMediaTech is here to help.  
+          Reach out today and let’s turn your ideas into reality.
+        </p>
 
-      <div class="mb-5">
-        <iframe style="width: 100%; height: 400px;" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621" frameborder="0" allowfullscreen=""></iframe>
-      </div><!-- End Google Maps -->
-
-      <div class="container" data-aos="fade">
-
-        <div class="row gy-5 gx-lg-5">
-
-          <div class="col-lg-4">
-
-            <div class="info">
-              <h3>Get in touch</h3>
-              <p>Ready to start your next project with us? Send us a messages and we will get back to you as soon as possible!.</p>
-
-              <div class="info-item d-flex">
-                <i class="bi bi-geo-alt flex-shrink-0"></i>
-                <div>
-                  <h4>Location:</h4>
-                  <p>59 Murtala Mohammed Way Ebutte-Meta, Lagos</p>
-                </div>
-              </div><!-- End Info Item -->
-
-              <div class="info-item d-flex">
-                <i class="bi bi-envelope flex-shrink-0"></i>
-                <div>
-                  <h4>Email:</h4>
-                  <p>makmediatech@gmail.com</p>
-                </div>
-              </div><!-- End Info Item -->
-
-              <div class="info-item d-flex">
-                <i class="bi bi-phone flex-shrink-0"></i>
-                <div>
-                  <h4>Call:</h4>
-                  <p>+234 7039 8046 76</p>
-                </div>
-              </div><!-- End Info Item -->
-            </div>
+        <!-- Contact Information -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div>
+            <h4 class="font-semibold text-lg">📍 Address</h4>
+            <p class="text-gray-600">Ogijo, Sagamu, Ogun State, Nigeria</p>
           </div>
-     
-             <div class="col-lg-8">
-           <br>
-            <br>
-            <br>
-              <form action="/contact" method="post" role="form" class="php-email-form">{% csrf_token %}
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <h5><span><i class="fas fa-user"></i> Name </label></span></h5>
-                        <input type="text" class="form-control mb-3" name="name" required/>
-                    </div>
-                    <div class="form-group">
-                        <h5><span><i class="bi bi-envelope navicon"></i> Email </label></span></h5>
-                        <input type="email" value="{{user.email}}" class="form-control mb-3" name="email" required/>
-                    </div>
-                    <div class="form-group">
-                        <h5><span><i class="fas fa-phone-alt"></i> Phone No. </label></span></h5>
-                        <input type="number" class="form-control mb-3" name="num" required/>
-                    </div>
-              </div>
-              
-              <div class="form-group mt-3">
-                <textarea class="form-control" name="message" placeholder="Message" required=""></textarea>
-              </div>
-              <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Your message has been sent. Thank you!</div>
-              </div>
-              <div class="text-center"><button type="submit">Send Message</button></div>
-            </form>
-            </div>
-             </form>
-            </div>
-            <div class="col-md-4"></div>
-            {% endblock body %}
+          <div>
+            <h4 class="font-semibold text-lg">📞 Phone</h4>
+            <a href="tel:+2347039804676" class="text-blue-500 hover:underline">+234 703 980 4676</a>
+          </div>
+          <div>
+            <h4 class="font-semibold text-lg">✉️ Email</h4>
+            <a href="mailto:info@makmediatech.tech" class="text-blue-500 hover:underline">info@makmediatech.tech</a>
+          </div>
         </div>
-    </div>
-    
+
+        <!-- Contact Form -->
+        <form action="{% url 'contact' %}" method="POST" class="bg-white shadow-lg rounded-lg p-6">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <input type="text" name="name" placeholder="Your Name" required 
+                   class="border border-gray-300 rounded-lg p-3 w-full">
+            <input type="email" name="email" placeholder="Your Email" required 
+                   class="border border-gray-300 rounded-lg p-3 w-full">
+            <input type="text" name="phone" placeholder="Your Phone (optional)" 
+                   class="border border-gray-300 rounded-lg p-3 w-full">
+          </div>
+
+          <textarea name="message" placeholder="Your Message" required 
+                    class="border border-gray-300 rounded-lg p-3 w-full mb-4"></textarea>
+
+          <button type="submit" 
+                  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </section>
+</main>
+{% endblock body %}
