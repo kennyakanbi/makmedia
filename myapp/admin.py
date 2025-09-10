@@ -3,9 +3,14 @@ from .models import Contact, Blog, Internship
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ("name", "email", "phone", "message", "created_at")
+    list_display = ("name", "email", "phone", "short_message", "created_at")
     search_fields = ("name", "email", "phone")
     list_filter = ("created_at",)
+
+    def short_message(self, obj):
+        return obj.message[:50] + "..." if len(obj.message) > 50 else obj.message
+    short_message.short_description = "Message"
+
 
 
 @admin.register(Blog)

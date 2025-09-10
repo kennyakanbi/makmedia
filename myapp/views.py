@@ -65,14 +65,15 @@ def contact(request):
     if request.method == "POST":
         fname = request.POST.get('name') 
         femail = request.POST.get('email')
-        fdesc = request.POST.get('message')   # ✅ match template
-        fphoneno = request.POST.get('phone')  # if you want to add a phone field later
+        fmessage = request.POST.get('message')   # ✅ fixed
+        fphoneno = request.POST.get('phone')
 
-        query = Contact(name=fname, email=femail, description=fdesc)
+        query = Contact(name=fname, email=femail, phone=fphoneno, message=fmessage)
         query.save()
         messages.success(request, "Thanks for contacting us! We’ll get back to you soon.")
         return redirect('/contact')
     return render(request, 'contact.html')
+
 
 
 

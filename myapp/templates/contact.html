@@ -5,76 +5,66 @@
 {% block body %}
 <main class="main">
 
-    <!-- Page Title -->
-    <div class="page-title dark-background" data-aos="fade" style="background-image: url({% static 'assets/img/contact.jpg' %});">
-      <div class="container position-relative">
-        <h1>Let's Connect</h1>
-        <p>
-          Let's start a conversation. Fill out our contact form. 
-        </p>
-        <nav class="breadcrumbs">
-          <ol>
-            <li><a href="{% url 'home' %}">Home</a></li>  <!-- Better: use url tag -->
-            <li class="current">Contact</li>
-          </ol>
-        </nav>
-      </div>
-    </div><!-- End Page Title -->
+  <!-- Hero Section -->
+  <section class="relative bg-cover bg-center py-20 text-white" 
+           style="background-image: url({% static 'assets/img/contact.jpg' %});">
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="relative container mx-auto text-center z-10">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">Let’s Connect</h1>
+      <p class="max-w-2xl mx-auto text-lg">
+        Have a project in mind? Fill out the form below and we’ll get back to you shortly.
+      </p>
+    </div>
+  </section>
 
-    <!-- Django messages -->
+  <!-- Flash Messages -->
+  <div class="container mx-auto px-4 mt-6 max-w-2xl">
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div class="mb-4 p-4 rounded-lg text-white {% if message.tags == 'success' %}bg-green-600{% else %}bg-red-600{% endif %}">
+        {{ message }}
       </div>
     {% endfor %}
+  </div>
 
-    <section class="py-12 bg-gray-50">
-      <div class="container mx-auto text-center max-w-3xl">
-        <h2 class="text-3xl font-bold mb-4 text-gray-900">Let’s Work Together</h2>
+  <!-- Contact Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+
+      <!-- Contact Info -->
+      <div>
+        <h2 class="text-3xl font-bold mb-6 text-gray-900">Get in Touch</h2>
         <p class="text-gray-700 mb-8">
           Whether you’re looking for a media campaign, a stunning website, powerful video content, 
-          or tech training to upskill your team, MakMediaTech is here to help.  
-          Reach out today and let’s turn your ideas into reality.
+          or training for your team — we’re here to help.
         </p>
+        <ul class="space-y-4 text-gray-700">
+          <li><strong>📍 Address:</strong> Ogijo, Sagamu, Ogun State, Nigeria</li>
+          <li><strong>📞 Phone:</strong> <a href="tel:+2347039804676" class="text-blue-600 hover:underline">+234 703 980 4676</a></li>
+          <li><strong>✉️ Email:</strong> <a href="mailto:info@makmediatech.tech" class="text-blue-600 hover:underline">info@makmediatech.tech</a></li>
+        </ul>
+      </div>
 
-        <!-- Contact Information -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div>
-            <h4 class="font-semibold text-lg">📍 Address</h4>
-            <p class="text-gray-600">Ogijo, Sagamu, Ogun State, Nigeria</p>
-          </div>
-          <div>
-            <h4 class="font-semibold text-lg">📞 Phone</h4>
-            <a href="tel:+2347039804676" class="text-blue-500 hover:underline">+234 703 980 4676</a>
-          </div>
-          <div>
-            <h4 class="font-semibold text-lg">✉️ Email</h4>
-            <a href="mailto:info@makmediatech.tech" class="text-blue-500 hover:underline">info@makmediatech.tech</a>
-          </div>
-        </div>
-
-        <!-- Contact Form -->
-        <form action="{% url 'contact' %}" method="POST" class="bg-white shadow-lg rounded-lg p-6">
+      <!-- Contact Form -->
+      <div class="bg-white shadow-lg rounded-xl p-8">
+        <form action="{% url 'contact' %}" method="POST" class="space-y-4">
           {% csrf_token %}
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <input type="text" name="name" placeholder="Your Name" required 
-                   class="border border-gray-300 rounded-lg p-3 w-full">
-            <input type="email" name="email" placeholder="Your Email" required 
-                   class="border border-gray-300 rounded-lg p-3 w-full">
-            <input type="text" name="phone" placeholder="Your Phone (optional)" 
-                   class="border border-gray-300 rounded-lg p-3 w-full">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" name="name" value="{{ request.POST.name }}" placeholder="Your Name" required
+                   class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
+            <input type="email" name="email" value="{{ request.POST.email }}" placeholder="Your Email" required
+                   class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
           </div>
-
+          <input type="text" name="phone" value="{{ request.POST.phone }}" placeholder="Your Phone (optional)"
+                 class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
           <textarea name="message" placeholder="Your Message" required 
-                    class="border border-gray-300 rounded-lg p-3 w-full mb-4"></textarea>
-
+                    class="border border-gray-300 rounded-lg p-3 w-full h-32 focus:ring-2 focus:ring-blue-500">{{ request.POST.message }}</textarea>
           <button type="submit" 
-                  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg">
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition">
             Send Message
           </button>
         </form>
       </div>
-    </section>
+    </div>
+  </section>
 </main>
 {% endblock body %}
