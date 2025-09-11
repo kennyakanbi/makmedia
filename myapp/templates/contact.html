@@ -27,8 +27,8 @@
       <div class="mb-4 p-4 rounded-lg text-white {% if message.tags == 'success' %}bg-green-600{% else %}bg-red-600{% endif %}">
         {{ message }}
       </div>
-    {% endfor %}
-  </div>
+      {% endfor %}
+        </div>
 
   <!-- Contact Section -->
   <section id="contact" class="contact section">
@@ -82,15 +82,18 @@
             <form action="{% url 'contact' %}" method="POST" class="space-y-4">
               {% csrf_token %}
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" name="name" value="{{ request.POST.name }}" placeholder="Your Name" required
-                       class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
-                <input type="email" name="email" value="{{ request.POST.email|default:user.email }}" placeholder="Your Email" required
-                       class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
-              </div>
-              <input type="text" name="phone" value="{{ request.POST.phone }}" placeholder="Your Phone (optional)"
-                     class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
-              <textarea name="message" placeholder="Your Message" required
-                        class="border border-gray-300 rounded-lg p-3 w-full h-32 focus:ring-2 focus:ring-blue-500">{{ request.POST.message }}</textarea>
+               <input type="text" name="name" placeholder="Your Name" required
+       class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
+
+<input type="email" name="email" placeholder="Your Email" required
+       class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500"> 
+
+<input type="text" name="phone" placeholder="Your Phone (optional)"
+       class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-blue-500">
+
+<textarea name="message" placeholder="Your Message" required
+          class="border border-gray-300 rounded-lg p-3 w-full h-32 focus:ring-2 focus:ring-blue-500"></textarea> <br>
+
               <button type="submit"
                       class="w-full bg-blue-600 hover:bg-blue-700 text-black font-semibold px-6 py-3 rounded-lg transition">
                 Send Message
