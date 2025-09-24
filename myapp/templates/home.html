@@ -146,8 +146,7 @@
           </div>
         </div>
       </div>
-
-    </section><!-- /About Section -->
+    </section>
 
     <!-- About Section -->
     <section id="about" class="about section">
@@ -157,9 +156,19 @@
             <div class="col-lg-6 mb-4 mb-lg-0"> <br><br><br><br><br><br>
               <img src="{% static 'assets/img/about.png' %}" alt="Image " class="img-fluid img-overlap" data-aos="zoom-out"> <br> <br> 
             <br>  <h2 style="text-align: justify;">Don't Let Your Business Fade Into The Background. Let Work Together To Create a Campaign That Drives Real Results For Your Business.</h2> <br> 
-            <p style="text-align: center;">Contact us today to discover how our creative and Tech Media Solutions can help you!</p>
-            <br>
-             <p><a href="/contact" class="about"><b>Get in touch</a></p></b>
+           
+             <p class="mb-4">
+          From <b>media advertising campaigns</b> to <b>web development, mobile apps, branding, printing, and training</b>, 
+          we bring together creativity, strategy, and technology to deliver results that matter.
+        </p>
+
+         <p style="text-align: center;">Contact us today to discover how our creative and Tech Media Solutions can help you!</p>
+            <br> <br>
+
+        <!-- CTA Buttons -->
+          <a href="#services" class="btn btn-primary px-4 py-2">View Services</a>
+          <a href="/contact" class="btn btn-outline-dark px-4 py-2">Get in Touch</a>
+        
           </div>
           
             <div class="col-lg-5 ml-auto" data-aos="fade-up" data-aos-delay="100">
@@ -254,12 +263,192 @@
               <li>Producing high-quality content that captivates and connects.</li>
               <li>Empowering individuals and teams with digital and technology skills to stay competitive.</li>
             </ul>
-
             <p><a href="/contact" class="btn-cta">Start a Project</a></p>
           </div>
         </div>
       </div>
     </section><!-- /About 3 Section -->
+
+<!-- Responsive Services Section -->
+<section id="services" class="services section">
+  <div class="container section-title text-center" data-aos="fade-up">
+    <h2><b>Our Media & Tech Services</b></h2>
+    <p>Choose a service and take the next step with us</p>
+  </div>
+
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- Media Ad Campaigns -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-card h-100 text-center p-4">
+          <div class="service-icon mb-3">
+            <i class="bi bi-megaphone display-5 text-accent"></i>
+          </div>
+          <h4>Media Ad Campaigns</h4>
+          <p>Targeted campaigns to maximize your brand’s online & offline visibility.</p>
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#contactModal" data-service="Media Ad Campaigns">Contact Us</button>
+            <button class="btn btn-accent btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal" data-service="Media Ad Campaigns">Pay Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Web Development -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-card h-100 text-center p-4">
+          <div class="service-icon mb-3">
+            <i class="bi bi-code-slash display-5 text-accent"></i>
+          </div>
+          <h4>Web Development</h4>
+          <p>Modern, responsive websites tailored to showcase your brand and engage users.</p>
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#contactModal" data-service="Web Development">Contact Us</button>
+            <button class="btn btn-accent btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal" data-service="Web Development">Pay Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Promotional Video & Live Stream -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-card h-100 text-center p-4">
+          <div class="service-icon mb-3">
+            <i class="bi bi-camera-reels display-5 text-accent"></i>
+          </div>
+          <h4>Promotional Video & Live Stream</h4>
+          <p>High-quality video production and seamless live streaming to engage your audience.</p>
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#contactModal" data-service="Promotional Video & Live Stream">Contact Us</button>
+            <button class="btn btn-accent btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal" data-service="Promotional Video & Live Stream">Pay Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media & Tech Training -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-card h-100 text-center p-4">
+          <div class="service-icon mb-3">
+            <i class="bi bi-mortarboard display-5 text-accent"></i>
+          </div>
+          <h4>Media & Tech Training</h4>
+          <p>Practical, hands-on training to equip you with the skills needed in today’s digital world.</p>
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#contactModal" data-service="Media & Tech Training">Contact Us</button>
+            <button class="btn btn-accent btn-sm" data-bs-toggle="modal" data-bs-target="#paymentModal" data-service="Media & Tech Training">Pay Now</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light rounded-3">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Contact Us - <span id="contactService"></span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <input type="hidden" id="contactServiceInput">
+          <div class="mb-3">
+            <label class="form-label">Your Name</label>
+            <input type="text" class="form-control" placeholder="Enter your name">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Your Email</label>
+            <input type="email" class="form-control" placeholder="Enter your email">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Message</label>
+            <textarea class="form-control" rows="3" placeholder="Tell us about your project"></textarea>
+          </div>
+          <button type="submit" class="btn btn-accent w-100">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-light rounded-3">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Pay Now - <span id="paymentService"></span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <input type="hidden" id="paymentServiceInput">
+          <div class="mb-3">
+            <label class="form-label">Amount</label>
+            <input type="number" class="form-control" placeholder="Enter amount">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Payment Method</label>
+            <select class="form-control">
+              <option>Credit Card</option>
+              <option>Bank Transfer</option>
+              <option>PayPal</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-accent w-100">Proceed to Pay</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Styles -->
+<style>
+  .service-card {
+    background: #132c49;
+    border-radius: 14px;
+    transition: all .3s ease;
+    color: #fff;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    border: 1px solid #15b3b0;
+  }
+  .service-icon i {
+    color: #15b3b0;
+  }
+  .btn-accent {
+    background: #15b3b0;
+    color: #052b2a;
+    border: none;
+  }
+  .btn-accent:hover {
+    background: #0f8e8a;
+    color: #fff;
+  }
+</style>
+
+<!-- Script to inject service name into modal -->
+<script>
+  const contactModal = document.getElementById('contactModal');
+  contactModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const service = button.getAttribute('data-service');
+    document.getElementById('contactService').textContent = service;
+    document.getElementById('contactServiceInput').value = service;
+  });
+
+  const paymentModal = document.getElementById('paymentModal');
+  paymentModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget;
+    const service = button.getAttribute('data-service');
+    document.getElementById('paymentService').textContent = service;
+    document.getElementById('paymentServiceInput').value = service;
+  });
+</script>
+
 
     <!-- Services 2 Section -->
     <section id="services-2" class="services-2 section dark-background">

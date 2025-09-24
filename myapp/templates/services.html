@@ -18,82 +18,369 @@
         </nav>
       </div>
     </div><!-- End Page Title -->
+  <br>
 
-      <!-- About Section -->
-    <section id="about" class="about section">
+  <!-- Service Introduction Section -->
+<section id="services-intro" class="services-intro section py-5 bg-light">
+  <div class="container" data-aos="fade-up">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10 text-center">
+        <h2 class="mb-3 fw-bold">Our Services</h2>
+        <p class="lead text-muted mb-4">
+          At <strong>Mak Media Tech</strong>, we provide a full range of innovative media and technology solutions 
+          designed to help your business grow, connect with customers, and stand out in today’s digital world.
+        </p>
+        <p class="mb-4">
+          From <b>media advertising campaigns</b> to <b>web development, mobile apps, branding, printing, and training</b>, 
+          we bring together creativity, strategy, and technology to deliver results that matter.
+        </p>
 
-      <div class="content">
+        <!-- CTA Buttons -->
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+          <a href="#services" class="btn btn-primary px-4 py-2">View Services</a>
+          <a href="/contact" class="btn btn-outline-dark px-4 py-2">Get in Touch</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /Service Introduction Section -->
+
+
+      <!-- Services 2 Section -->
+    <section id="services-2" class="services-2 section dark-background">
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="">
+        <b><h2 class="fw-bold" style="text-align: center;">  DISCOVER Our Range of Services
+       </h2></b>
+
+   <p class="" style="text-align: justify;">
+     At <strong>Mak Media Tech</strong>, every service is designed to move your brand forward.  
+    Explore our gallery of solutions, from <b>media campaigns and design</b> to <b>software development, printing, and training</b>, 
+    all crafted to deliver measurable results and long-lasting impact.
+   </p>
+  </div><!-- End Section Title -->
+
+      <div class="services-carousel-wrap">
         <div class="container">
-          <div class="row">
-            <div class="col-lg-6 mb-4 mb-lg-0"> <br><br><br><br><br><br>
-              <img src="{% static 'assets/img/about.png' %}" alt="Image " class="img-fluid img-overlap" data-aos="zoom-out"> <br> <br> 
-            <br>  <h2 style="text-align: justify;">Don't Let Your Business Fade Into The Background. Let Work Together To Create a Campaign That Drives Real Results For Your Business.</h2> <br> 
-            <p style="text-align: center;">Contact us today to discover how our creative and Tech Media Solutions can help you!</p>
-            <br>
-             <p><a href="/contact" class="about"><b>Get in touch</a></p></b>
-          </div>
-          
-            <div class="col-lg-5 ml-auto" data-aos="fade-up" data-aos-delay="100">
-              <h2 class="content-subtitle text-white opacity-50"><strong></strong>Why Choose Us </strong></h2><br><br>
-              <h2 class="content-title mb-4">
-                The <strong>Right Partner For Your</strong> Business Growth
-              </h2>
-              <p class="opacity-50">
-              At Mak Media Tech, we combine expertise, creativity, and technology to help your business thrive. We don’t just provide services, 
-              we listen, understand, and deliver solutions tailored to your goals. With us, you’ll feel valued and supported, because your success 
-              is our success. We treat your business like our own, taking a genuine interest in helping you unlock its full potential.
-              </p>
-
-              <div class="row my-5">
-                <div class="col-lg-12 d-flex align-items-start mb-4">
-                  <i class="bi bi-megaphone me-4 display-6"></i>
-                  <div>
-                    <h4 class="m-0 h5 text-white">Media Advertising Campaign</h4>
-                    <p class="text-white opacity-50">
-                    <b>Creative Campaigns That Deliver Results</b></br> We craft impactful, 
-                    data-driven advertising strategies that help brands stand out, connect with 
-                    audiences, and grow faster.</p>
+          <div class="swiper init-swiper">
+            <script type="application/json" class="swiper-config">
+              {
+                "loop": true,
+                "speed": 600,
+                "autoplay": {
+                  "delay": 5000
+                },
+                "slidesPerView": "auto",
+                "pagination": {
+                  "el": ".swiper-pagination",
+                  "type": "bullets",
+                  "clickable": true
+                },
+                "navigation": {
+                  "nextEl": ".js-custom-next",
+                  "prevEl": ".js-custom-prev"
+                },
+                "breakpoints": {
+                  "320": {
+                    "slidesPerView": 1,
+                    "spaceBetween": 40
+                  },
+                  "1200": {
+                    "slidesPerView": 3,
+                    "spaceBetween": 40
+                  }
+                }
+              }
+            </script>
+            <button class="navigation-prev js-custom-prev">
+              <i class="bi bi-arrow-left-short"></i>
+            </button>
+            <button class="navigation-next js-custom-next">
+              <i class="bi bi-arrow-right-short"></i>
+            </button>
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">We provide</span>
+                      <h2 class="service-item-title">Applications Development</h2>
+                    </a>
                   </div>
+                  <img src="{% static 'assets/img/service_1.jpg' %}" alt="Image" class="img-fluid">
                 </div>
-                <div class="col-lg-12 d-flex align-items-start mb-4">
-                  <i class="bi bi-bullseye me-4 display-6"></i>
-                  <div>
-                    <h4 class="m-0 h5 text-white">Software Solutions</h4>
-                    <p class="text-white opacity-50">
-                      <b>Smart Technology for Modern Businesses</b> <br>From web platforms to custom applications, our software 
-                      solutions are built to solve real problems and drive business success.
-                    </p>
+              </div>
+              <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">We provide</span>
+                      <h2 class="service-item-title">Media and Tech Training</h2>
+                    </a>
                   </div>
+                  <img src="{% static 'assets/img/service_22.jpg' %}" alt="Image" class="img-fluid">
                 </div>
-                <div class="col-lg-12 d-flex align-items-start">
-                  <i class="bi bi-camera-video me-4 display-6"></i>
-                  <div>
-                    <h4 class="m-0 h5 text-white">Video & Live Stream Production</h4>
-                    <p class="text-white opacity-50">
-                    <b>Engaging Stories, Captured Live</b><br>
-                    From professional video production to seamless live streaming, we help brands connect 
-                    with audiences through compelling visuals and real-time engagement.</p>
+              </div>
+              <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">We provide</span>
+                      <h2 class="service-item-title">Media Ad Campaigns</h2>
+                    </a>
                   </div>
+                  <img src="{% static 'assets/img/service_3.jpg' %}" alt="Image" class="img-fluid">
                 </div>
-                  <div class="row my-5">
-                <div class="col-lg-12 d-flex align-items-start mb-4">
-                 <i class="bi bi-mortarboard me-4 display-6"></i>
-                  <div>
-                    <h4 class="m-0 h5 text-white">Media & Tech Training</h4>
-                    <p class="text-white opacity-50">
-At mak Media Tech, we don't just deliver services: we equip you with the skills and career oppotunity
-to create and suceed. Our training programs are practical, hand-on, and industrial-driven helping
-you in today's competitive digital world.</p>
+              </div>
+               <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">We provide</span>
+                      <h2 class="service-item-title">Media Ad Campaigns</h2>
+                    </a>
                   </div>
+                  <img src="{% static 'assets/img/service_2.jpg' %}" alt="Image" class="img-fluid">
+                </div>
+              </div>
+              <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">We provide</span>
+                      <h2 class="service-item-title">Mobile App Development</h2>
+                    </a>
+                  </div>
+                  <img src="{% static 'assets/img/service_8.jpg' %}" alt="Image" class="img-fluid">
+                </div>
+              </div>
+              <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">We provide</span>
+                      <h2 class="service-item-title">Printing Services</h2>
+                    </a>
+                  </div>
+                  <img src="{% static 'assets/img/service_5.jpg' %}" alt="Image" class="img-fluid">
+                </div>
+              </div>
+              <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">We provide</span>
+                      <h2 class="service-item-title">Web Development</h2>
+                    </a>
+                  </div>
+                  <img src="{% static 'assets/img/service_9.jpg' %}" alt="Image" class="img-fluid">
+                </div>
+              </div>
+              <div class="swiper-slide">
+                <div class="service-item">
+                  <div class="service-item-contents">
+                    <a href="#">
+                      <span class="service-item-category">ekevate your business</span>
+                      <h2 class="service-item-title">Get Instant Access to Our Book 'Tech For Growth' and Start Building a Triving 
+                        Business - Buy Now and Start Growing Today! </h2>
+                    </a>
+                  </div>
+                  <img src="{% static 'assets/img/book.jpg' %}" alt="Image" class="img-fluid">
                 </div>
               </div>
             </div>
+            <div class="swiper-pagination"></div>
           </div>
         </div>
       </div>
-         </div>
+    </section><!-- /Services 2 Section -->
+
+   
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h2>MEDIA SERVICES</h2>
+    <p>Transforming Your Business with Innovative Media Services</p>
+  </div>
+
+  <div class="container">
+    <div class="row g-4">
+      
+      <!-- Media Ad Campaigns -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">01</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11v2c0 .55.45 1 1 1h2l3 4v-4h4l5-5-5-5H7v4H4c-.55 0-1 .45-1 1z"/>
+              <path d="M16 12v.01M19 12v.01M22 12v.01"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Media Ad Campaigns</h3>
+            <p>Targeted campaigns to maximize your online & offline visibility.</p>
+          </div>
+        </div>
       </div>
-    </section><!-- /About Section -->
+
+      <!-- Website Development -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">02</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="white">
+              <rect x="3" y="4" width="18" height="16" rx="2"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Website Development</h3>
+            <p>Creating stunning websites that showcase your brand’s unique story.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile App Development -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">03</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" stroke="white" fill="none" stroke-width="2">
+              <rect x="7" y="2" width="10" height="20" rx="2"/>
+              <circle cx="12" cy="18" r="1"/>
+              <path d="M10 6l-2 2 2 2M14 6l2 2-2 2"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Mobile App Development</h3>
+            <p>Custom mobile applications designed to fit your business needs.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brand Design -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">04</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" stroke="white" fill="none" stroke-width="2">
+              <path d="M3 21l6-6M14.5 3.5l6 6-11 11H3v-6l11-11z"/>
+              <path d="M15 5l4 4M9 11l4 4"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Brand Design</h3>
+            <p>Building strong brand foundations through strategic design.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Printing -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">05</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" stroke="white" fill="none" stroke-width="2">
+              <rect x="6" y="13" width="12" height="7"/>
+              <path d="M6 9V4h12v5M6 16h12M18 9h1a1 1 0 0 1 1 1v3h-2M6 9H5a1 1 0 0 0-1 1v3h2"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Printing</h3>
+            <p>Professional printing for marketing materials, business cards, and more.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Production -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">06</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="white">
+              <path d="M17 10.5V6c0-1.1-.9-2-2-2H5C3.9 4 3 4.9 3 6v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4.5l4 4v-11l-4 4z"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Video Production</h3>
+            <p>Live streaming and video production services for engaging audiences.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consultancy -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">07</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" stroke="white" fill="none" stroke-width="2">
+              <circle cx="12" cy="7" r="3"/>
+              <path d="M4 21v-2c0-2.21 1.79-4 4-4h8c2.21 0 4 1.79 4 4v2"/>
+              <circle cx="19" cy="13" r="2"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Consultancy</h3>
+            <p>Strategic consulting services for ambitious businesses.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coaching -->
+      <div class="col-lg-3 col-md-6">
+        <div class="service-item text-center">
+          <span class="number">08</span>
+          <div class="service-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" stroke="white" fill="none" stroke-width="2">
+              <rect x="2" y="4" width="20" height="14" rx="2"/>
+              <path d="M12 2L8 5l4 3 4-3-4-3z"/>
+              <line x1="2" y1="20" x2="22" y2="20"/>
+            </svg>
+          </div>
+          <div class="service-item-content">
+            <h3 class="service-heading">Coaching</h3>
+            <p>Empowering individuals and teams through expert training.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-item {
+    background: #132c49;
+    padding: 30px;
+    border-radius: 12px;
+    transition: all .3s ease;
+    height: 100%;
+  }
+  .service-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.4);
+  }
+  .service-item-icon {
+    margin-bottom: 15px;
+  }
+  .service-item-icon svg {
+    display: inline-block;
+  }
+  .service-heading {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #fff;
+  }
+  .service-item p {
+    color: #ddd;
+  }
+  .number {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #15b3b0;
+    margin-bottom: 10px;
+  }
+</style>
 
     <!-- Testimonials Section -->
     <section class="testimonials-12 testimonials section" id="testimonials">
@@ -191,185 +478,7 @@ you in today's competitive digital world.</p>
    <!-- Services Section -->
     <section id="services" class="services section">
 
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2><b> MEDIA ADVERTISING AND TECH SERVICES</h2></b>
-        <p>Transforming Your Business with Innovative Media & Tech Services</p>
-      </div>
-      
-      <!-- End Section Title -->
-     <div class="content">
-        <div class="container">
-          <div class="row g-0">
-            <div class="col-lg-3 col-md-6">
-              <div class="service-item">
-                <span class="number">01</span>
-                <div class="service-item-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M3 11v2c0 .55.45 1 1 1h2l3 4v-4h4l5-5-5-5H7v4H4c-.55 0-1 .45-1 1z"></path>
-    <path d="M16 12v.01"></path>
-    <path d="M19 12v.01"></path>
-    <path d="M22 12v.01"></path>
-  </svg>
-      <path d="M12 24V40H20L32 48V16L20 24H12Z" fill="#EAF4FF"/>
-      <path d="M44 24C46.2091 26.2091 47.5 29.2386 47.5 32.5C47.5 35.7614 46.2091 38.7909 44 41"/>
-      <path d="M49.5 19C53.6421 23.1421 56 27.8095 56 32.5C56 37.1905 53.6421 41.8579 49.5 46"/>
-      <path d="M32 16V48"/>
-    </g>
-  </svg>
-  </div>
-  <div class="service-item-content">
-                  <h3 class="service-heading">Media Ad Campaigns </h3>
-                  <p>
-                    Targeted Media Ad Campaigns to maximixe your online and offline visibility.
-                  </p>
-                </div>
-              </div>
-            </div>
-  
-  <div class="col-lg-3 col-md-6">
-  <div class="service-item">
-    <span class="number">02</span>
-    <div class="service-item-icon">
-     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M4 5c-.552 0-1 .448-1 1v11c0 .552.448 1 1 1h16c.552 0 1-.448 1-1V6c0-.552-.448-1-1-1H4zm0-2h16c1.654 0 3 1.346 3 3v11c0 1.654-1.346 3-3 3H4c-1.654 0-3-1.346-3-3V6c0-1.654 1.346-3 3-3zm3 13.5h10v-1H7v1zm1.707-4.707l-1.414 1.414L9.586 12 7.293 9.793l1.414-1.414L12 12l-3.293 3.293zm5.586 0L14.293 15.707 12 13.414l2.293-2.293 1.414 1.414L14.414 12l1.879-1.879-1.414-1.414L12 12l3.293 3.293z"/>
-      </svg>
-    </div>
-
-    <div class="service-item-content">
-      <h3 class="service-heading">Website Development</h3>
-      <p>
-        Creating stunning websites that showcase your brand's unique story.
-      </p>
-    </div>
-  </div>
-</div>
-
- <div class="col-lg-3 col-md-6">
-              <div class="service-item">
-                <span class="number">03</span>
-                <div class="service-item-icon">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="7" y="2" width="10" height="20" rx="2" ry="2"></rect>
-    <circle cx="12" cy="18" r="1"></circle>
-    <path d="M10 6l-2 2 2 2"></path>
-    <path d="M14 6l2 2-2 2"></path>
-                  </svg>
-                </div>
-                <div class="service-item-content">
-                  <h3 class="service-heading">Mobile App Development</h3>
-                  <p>
-                    Custom Mobile App Development for unique businessneeds.
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-      <div class="col-lg-3 col-md-6">
-      <div class="service-item">
-      <span class="number">04</span>
-      <div class="service-item-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none">
-    
-        <!-- Icon: Pencil and Ruler (Design) -->
-        <path d="M3 21l6-6M14.5 3.5l6 6-11 11H3v-6l11-11z" stroke="currentColor" stroke-width="2" fill="none"/>
-        <path d="M15 5l4 4" stroke="currentColor" stroke-width="2"/>
-        <path d="M9 11l4 4" stroke="currentColor" stroke-width="2"/>
-      </svg>
-
-                </div>
-                <div class="service-item-content">
-                  <h3 class="service-heading">Beand Design</h3>
-                  <p>
-                    Building strong brand foundations through strategic design.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-              <div class="service-item">
-                <span class="number">05</span>
-                <div class="service-item-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none">
-        <!-- Icon: Printer -->
-        <path d="M6 9V4h12v5" stroke="currentColor" stroke-width="2" fill="none"/>
-        <rect x="6" y="13" width="12" height="7" stroke="currentColor" stroke-width="2" fill="none"/>
-        <path d="M6 16h12" stroke="currentColor" stroke-width="2"/>
-        <path d="M18 9h1a1 1 0 0 1 1 1v3h-2M6 9H5a1 1 0 0 0-1 1v3h2" stroke="currentColor" stroke-width="2"/>
-        <circle cx="17" cy="14" r="0.5" fill="currentColor"/>
-      </svg>
-                  </svg>
-                </div>
-                <div class="service-item-content">
-                  <h3 class="service-heading">Printing</h3>
-                  <p>
-                    Proffesional printing for marketing materials, business, cards, and more. 
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <div class="service-item">
-                <span class="number">06</span>
-                <div class="service-item-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17 10.5V6c0-1.1-.9-2-2-2H5C3.9 4 3 4.9 3 6v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4.5l4 4v-11l-4 4z"/>
-      </svg>
-                </div>
-                <div class="service-item-content">
-                  <h3 class="service-heading">Video Productions</h3>
-                  <p>
-                    Live streaming and video producyion services for engaging audiences.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <div class="service-item">
-                <span class="number">07</span>
-                <div class="service-item-icon">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none">
-        <!-- Icon: Person with speech bubble and gear -->
-        <circle cx="12" cy="7" r="3" stroke="currentColor" stroke-width="2" fill="none"/>
-        <path d="M4 21v-2c0-2.21 1.79-4 4-4h8c2.21 0 4 1.79 4 4v2" stroke="currentColor" stroke-width="2"/>
-        <path d="M17 3h3a1 1 0 0 1 1 1v3l-2-1-2 1V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="2" fill="none"/>
-        <circle cx="19" cy="13" r="2" stroke="currentColor" stroke-width="2" fill="none"/>
-        <path d="M19 15v1m0-5v1m2.12 1.88l-.71.71m-4.24 0l-.71-.71m5.66-2.12h-1m-5 0h-1" stroke="currentColor" stroke-width="2"/>
-      </svg>
-                </div>
-                <div class="service-item-content">
-                  <h3 class="service-heading">Consultant</h3>
-                  <p>
-                    Strategic consulting services for ambitiois business.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <div class="service-item">
-                <span class="number">08</span>
-                <div class="service-item-icon">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none">
-        <!-- A monitor with a graduation cap -->
-        <rect x="2" y="4" width="20" height="14" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-        <path d="M12 2L8 5l4 3 4-3-4-3z" stroke="currentColor" stroke-width="2" fill="none"/>
-        <path d="M12 8v2" stroke="currentColor" stroke-width="2"/>
-        <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="2"/>
-      </svg>
-                </div>
-                <div class="service-item-content">
-                  <h3 class="service-heading">Coaching</h3>
-                  <p>
-                    Empowering individuals and teams through expert coaching and training.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section><!-- /Services Section -->
+    </section><!-- /Testimonials Section -->  
 
   {% endblock body %}
   </main>
