@@ -1,18 +1,23 @@
-# settings.py - production-ready for Railway
+# settings.py - Production-ready for Railway
 from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
 import dj_database_url
 
+# ------------------------------
+# Paths
+# ------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY
-# Get secret & debug from env. NEVER keep real secret in source.
+# ------------------------------
+# Security
+# ------------------------------
 SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-local-secret-replace-me")
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 
+# ------------------------------
 # Hosts
-# Set ALLOWED_HOSTS in Railway env as comma-separated list (example: myapp.up.railway.app,www.example.com)
+# ------------------------------
 _allowed = os.environ.get("ALLOWED_HOSTS", "")
 if _allowed:
     ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
@@ -21,7 +26,9 @@ elif DEBUG:
 else:
     ALLOWED_HOSTS = []
 
-# Apps & middleware
+# ------------------------------
+# Installed apps
+# ------------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -33,6 +40,9 @@ INSTALLED_APPS = [
     "main",
 ]
 
+# ------------------------------
+# Middleware
+# ------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -41,11 +51,18 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # serve static files
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Serve static files
 ]
 
+# ------------------------------
+# URL & WSGI
+# ------------------------------
 ROOT_URLCONF = "project.urls"
+WSGI_APPLICATION = "project.wsgi.application"
 
+# ------------------------------
+# Templates
+# ------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -62,16 +79,18 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "project.wsgi.application"
-
-# Database: use DATABASE_URL on Railway, fallback to local sqlite
+# ------------------------------
+# Database
+# ------------------------------
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{str(BASE_DIR / 'db.sqlite3')}", conn_max_age=600
     )
 }
 
-# Password validators
+# ------------------------------
+# Password validation
+# ------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -79,22 +98,41 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# ------------------------------
 # Internationalization
+# ------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# ------------------------------
 # Static files
+# ------------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"  # collectstatic -> staticfiles
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# ------------------------------
 # Default primary key
+# ------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# ------------------------------
+# Messages
+# ------------------------------
 MESSAGES_TAGS = {messages.ERROR: "danger"}
 
+# ------------------------------
+# Security headers for production
+# ------------------------------
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
+# ------------------------------
 # Ensure Django redirects /path -> /path/
+# ------------------------------
 APPEND_SLASH = True
