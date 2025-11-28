@@ -3,7 +3,8 @@ from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
 import dj_database_url
-
+import time
+import psycopg
 # ------------------------------
 # Paths
 # ------------------------------
@@ -83,11 +84,19 @@ TEMPLATES = [
 # Database
 # ------------------------------
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{str(BASE_DIR / 'db.sqlite3')}", conn_max_age=600
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
     )
 }
 
+for _ in range(10):
+    try:
+        psycopg.connect(os.environ['DATABASE_URL'], connect_timeout=5).close()
+        break
+    except:
+        time.sleep(5)
 # ------------------------------
 # Password validation
 # ------------------------------
