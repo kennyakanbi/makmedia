@@ -1,17 +1,18 @@
 # settings.py - Production-ready for Railway
+
 from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
 import dj_database_url
-import time
-import psycopg
-# ------------------------------
-# Paths
-# ------------------------------
+from dotenv import load_dotenv
+
+# Load .env if it exists
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ------------------------------
-# Security
+# Environment Variables
 # ------------------------------
 SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-local-secret-replace-me")
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
@@ -19,16 +20,11 @@ DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 # ------------------------------
 # Hosts
 # ------------------------------
-_allowed = os.environ.get("ALLOWED_HOSTS", "")
-if _allowed:
-    ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
-elif DEBUG:
-    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-else:
-    ALLOWED_HOSTS = []
+_allowed = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,generous-vitality.up.railway.app")
+ALLOWED_HOSTS = [host.strip() for host in _allowed.split(",") if host.strip()]
 
 # ------------------------------
-# Installed apps
+# Installed Apps
 # ------------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -46,13 +42,13 @@ INSTALLED_APPS = [
 # ------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Serve static files efficiently
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Serve static files
 ]
 
 # ------------------------------
@@ -81,22 +77,16 @@ TEMPLATES = [
 ]
 
 # ------------------------------
-# Database
+# Database (Railway / Local)
 # ------------------------------
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
+    "default": dj_database_url.config(
+        default=os.environ.get("DATABASE_URL", "postgres://postgres:password@localhost:5432/brandwebsite"),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=not DEBUG,  # Require SSL in production
     )
 }
 
-for _ in range(10):
-    try:
-        psycopg.connect(os.environ['DATABASE_URL'], connect_timeout=5).close()
-        break
-    except:
-        time.sleep(5)
 # ------------------------------
 # Password validation
 # ------------------------------
@@ -134,14 +124,27 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MESSAGES_TAGS = {messages.ERROR: "danger"}
 
 # ------------------------------
-# Security headers for production
+# Security headers (Production)
 # ------------------------------
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 # ------------------------------
-# Ensure Django redirects /path -> /path/
+# Redirect /path -> /path/
 # ------------------------------
 APPEND_SLASH = True
+
+# ------------------------------
+# Logging
+# ------------------------------
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "root": {"handlers": ["console"], "level": "INFO"},
+}
