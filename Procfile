@@ -1,2 +1,2 @@
-web: gunicorn project.wsgi
-gunicorn project.wsgi:application --bind 0.0.0.0:$PORT --log-level debug
+﻿web: gunicorn project.wsgi --bind 0.0.0.0:$PORT
+release: python manage.py migrate
