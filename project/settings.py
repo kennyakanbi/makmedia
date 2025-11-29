@@ -1,13 +1,7 @@
-# settings.py - Production-ready for Railway
-
 from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
 import dj_database_url
-from dotenv import load_dotenv
-
-# Load .env if it exists
-load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,8 +14,11 @@ DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 # ------------------------------
 # Hosts
 # ------------------------------
-_allowed = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost")
-ALLOWED_HOSTS = [host.strip() for host in _allowed.split(",") if host.strip()]
+# Include your Railway domain(s)
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app"
+).split(",")
 
 # ------------------------------
 # Installed Apps
@@ -42,7 +39,7 @@ INSTALLED_APPS = [
 # ------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Serve static files efficiently
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -77,13 +74,13 @@ TEMPLATES = [
 ]
 
 # ------------------------------
-# Database (Railway / Local)
+# Database (Railway)
 # ------------------------------
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL", "postgres://postgres:password@localhost:5432/brandwebsite"),
+        default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=not DEBUG,  # Require SSL in production
+        ssl_require=not DEBUG,  # Enforce SSL in production
     )
 }
 
@@ -113,7 +110,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# -----------------------------
+# ------------------------------
 # Default primary key
 # ------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
