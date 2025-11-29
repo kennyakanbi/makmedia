@@ -20,7 +20,7 @@ DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 # ------------------------------
 # Hosts
 # ------------------------------
-_allowed = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,generous-vitality.up.railway.app")
+_allowed = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost")
 ALLOWED_HOSTS = [host.strip() for host in _allowed.split(",") if host.strip()]
 
 # ------------------------------
@@ -113,7 +113,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# ------------------------------
+# -----------------------------
 # Default primary key
 # ------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
