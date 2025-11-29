@@ -1,5 +1,4 @@
-# production-ready settings snippet (replace the top of your settings.py)
-
+from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 import os
 from django.contrib.messages import constants as messages
@@ -16,7 +15,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Use a single canonical DEBUG boolean (readable from env)
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "u!^@zyi4n@9tv35xwx%u1h0u=9jmn(3$0tm-q@px3uej_1ok885")
+SECRET_KEY = os.environ.get("SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = "unsafe-local-secret-replace-me"   # only for local dev
+    else:
+        raise ImproperlyConfigured("SECRET_KEY environment variable is required in production")
 
 # ------------------------------
 # Hosts & trusted origins
