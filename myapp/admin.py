@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Contact, Blog, Internship
+from .models import Contact, Blog, Internship, BlogImage
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
@@ -11,7 +11,10 @@ class ContactAdmin(admin.ModelAdmin):
         return obj.message[:50] + "..." if len(obj.message) > 50 else obj.message
     short_message.short_description = "Message"
 
-
+# Inline for extra blog images
+class BlogImageInline(admin.TabularInline):
+    model = BlogImage
+    extra = 1  # Shows one extra empty field by default
 
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
@@ -19,7 +22,7 @@ class BlogAdmin(admin.ModelAdmin):
     search_fields = ("title", "author_name")
     list_filter = ("created_at",)
     prepopulated_fields = {"slug": ("title",)}  # auto-fill slug in admin
-
+    inlines = [BlogImageInline]  # Add the inline here
 
 @admin.register(Internship)
 class InternshipAdmin(admin.ModelAdmin):

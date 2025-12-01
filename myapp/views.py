@@ -4,6 +4,8 @@ from django.shortcuts import render, get_object_or_404
 from myapp.models import Contact, Blog, Internship
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+import re
+from .models import Blog
 
 def home(request):
     return render(request, 'home.html')
@@ -12,9 +14,55 @@ def blog_list(request):
     posts = Blog.objects.all()
     return render(request, "blog_list.html", {"posts": posts})
 
+
 def blog_detail(request, slug):
     post = get_object_or_404(Blog, slug=slug)
-    return render(request, "blog_detail.html", {"post": post})
+
+    raw = post.content or ""
+    # split paragraphs by blank lines (authors separate paragraphs with an empty line)
+    paragraphs = [p.strip() for p in re.split(r'\n\s*\n', raw) if p.strip()]
+    # fallback to single-line splits if no blank-line paragraphs found
+    if not paragraphs:
+        paragraphs = [p.strip() for p in raw.splitlines() if p.strip()]
+
+    extra_images = list(getattr(post, "extra_images", post).all()) if hasattr(post, "extra_images") else list(post.extra_images.all()) if hasattr(post, "extra_images") else []
+    # safer: try to get the related_name; if your related_name is "extra_images" it will work.
+    # If extra_images fails, set empty list:
+    if not isinstance(extra_images, list):
+        extra_images = list(extra_images)
+
+    n_par = len(paragraphs)
+    n_img = len(extra_images)
+
+    # compute insert positions after paragraph i (1-based) to spread images evenly
+    insert_after = []
+    if n_img > 0 and n_par > 0:
+        for i in range(n_img):
+            pos = round((i + 1) * n_par / (n_img + 1))
+            pos = max(1, min(n_par, pos))
+            insert_after.append(pos)
+
+    # Build content_blocks list: {"type":"p","text":...} or {"type":"img","image": <BlogImage>}
+    content_blocks = []
+    img_i = 0
+    for i, para in enumerate(paragraphs, start=1):
+        content_blocks.append({"type": "p", "text": para})
+        # insert any images scheduled after this paragraph
+        while img_i < n_img and insert_after and insert_after[img_i] == i:
+            content_blocks.append({"type": "img", "image": extra_images[img_i]})
+            img_i += 1
+
+    # append leftover images at end
+    while img_i < n_img:
+        content_blocks.append({"type": "img", "image": extra_images[img_i]})
+        img_i += 1
+
+    # always pass content_blocks even if empty
+    return render(request, "blog_detail.html", {
+        "post": post,
+        "content_blocks": content_blocks,
+    })
+
 
 def about(request):
     return render(request, 'about.html')

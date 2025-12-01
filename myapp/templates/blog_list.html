@@ -20,14 +20,11 @@
   </div>
   <!-- End Page Title -->
 
-   <!-- Section Title -->
- <div class="container section-title" data-aos="fade-up">
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
     <h1 class="h1-color text-center"><b>Welcome to Mak Media Tech Blog</b></h1> <br>
     <p style="text-align:justify;">
-      At Mak Media Tech, we believe technology and media are powerful tools for transformation. Our blog is a hub for exploring the intersection of innovation, creativity, and African excellence.
-      Here, we share insights that cut across emerging technologies, digital media, entrepreneurship, and cultural storytelling—all through the lens of Africa’s vibrant spirit. From the thriving startup scenes of Lagos and Nairobi to groundbreaking digital trends shaping global industries, we bring you stories that matter.
-      Our mission is to inspire, inform, and empower—spotlighting the ideas, innovations, and voices driving change across the continent. Whether you’re a tech enthusiast, a creative storyteller, a business leader, or simply curious about Africa’s digital future, this is your go-to space.
-      Join us as we explore new technologies, media strategies, success stories, and bold ideas shaping the future of Africa and beyond.
+      At Mak Media Tech, we believe technology and media are powerful tools for transformation. Our blog is a hub for exploring innovation, creativity, and African excellence.
     </p>
   </div>
   <!-- End Section Title -->
@@ -42,8 +39,8 @@
               
               <!-- Post Image -->
               <div class="post-img position-relative">
-                {% if post.image %}
-                  <img src="{{ post.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
+                {% if post.extra_images.all %}
+                  <img src="{{ post.extra_images.all.0.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
                 {% else %}
                   <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid w-100" alt="No image available">
                 {% endif %}
@@ -53,15 +50,15 @@
               <div class="p-3">
                 <div class="meta small text-muted mb-2">
                   <span><i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}</span> &nbsp;|&nbsp;
-                  <span><i class="bi bi-person"></i> {{ post.author_name }}</span> &nbsp;|&nbsp;
-                  <span><i class="bi bi-folder2"></i> Tech</span>
+                  <span><i class="bi bi-person"></i> {{ post.author_name }}</span>
                 </div>
 
                 <!-- Post Content -->
                 <h3 class="post-title">{{ post.title }}</h3>
+                <p class="post-description">{{ post.description|truncatewords:20 }}</p>
                 <a href="{% url 'blog_detail' post.slug %}" class="readmore stretched-link">
-  <span>Read More</span><i class="bi bi-arrow-right"></i>
-</a>
+                  <span>Read More</span><i class="bi bi-arrow-right"></i>
+                </a>
 
               </div>
             </article>

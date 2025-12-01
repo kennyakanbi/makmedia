@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Use a single canonical DEBUG boolean (readable from env)
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("")
 if not SECRET_KEY:
     if DEBUG:
         SECRET_KEY = "unsafe-local-secret-replace-me"   # only for local dev
@@ -132,3 +132,7 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "root": {"handlers": ["console"], "level": "INFO"},
 }
+
+# Media files (uploads)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

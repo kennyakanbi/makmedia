@@ -24,7 +24,6 @@ class Blog(models.Model):
     description = models.TextField()
     content = models.TextField()
     author_name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to="blog_images/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -39,6 +38,15 @@ class Blog(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+# New model for multiple images
+class BlogImage(models.Model):
+    blog = models.ForeignKey(Blog, related_name="extra_images", on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="blog_images/")
+    caption = models.CharField(max_length=150, blank=True, null=True)
+
+    def __str__(self):
+        return f"Image for {self.blog.title}"
 
 
 class Internship(models.Model):

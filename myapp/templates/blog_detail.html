@@ -8,9 +8,9 @@
   <!-- Page Title -->
   <div class="page-title dark-background" data-aos="fade" style="background-image: url({% static 'assets/img/write.jpg' %});">
     <div class="container text-center">
-      <h1>{{ post.title }}</h1>
-      <p>
-        <i class="bi bi-person"></i> {{ post.author_name }} | 
+      <h1 class="display-4">{{ post.title }}</h1>
+      <p class="text-muted">
+        <i class="bi bi-person"></i> {{ post.author_name }} |
         <i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}
       </p>
     </div>
@@ -22,12 +22,38 @@
       <div class="row justify-content-center">
         <div class="col-lg-8">
 
+          {# main top image (featured) #}
           {% if post.image %}
-            <img src="{{ post.image.url }}" class="img-fluid rounded mb-4" alt="{{ post.title }}">
+            <img src="{{ post.image.url }}" class="img-fluid rounded mb-4 w-100" alt="{{ post.title }}">
           {% endif %}
 
           <div class="post-body">
-            <p>{{ post.content|linebreaks }}</p>
+            {# content_blocks is a list of dicts built in the view #}
+            {% for block in content_blocks %}
+              {% if block.type == "p" %}
+                <p>{{ block.text|linebreaksbr }}</p>
+              {% elif block.type == "img" %}
+                <div class="my-4">
+                  <img src="{{ block.image.image.url }}" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:post.title }}">
+                  {% if block.image.caption %}
+                    <p class="small text-muted mt-2">{{ block.image.caption }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            {# If content_blocks empty, fall back to raw content #}
+            {% if not content_blocks %}
+              <div>{{ post.content|linebreaksbr }}</div>
+            {% endif %}
+          </div>
+
+          <hr class="my-5">
+          <p class="text-center text-muted">Share this post:</p>
+          <div class="text-center">
+            <a href="#" class="btn btn-primary btn-sm mx-1">Facebook</a>
+            <a href="#" class="btn btn-info btn-sm mx-1">Twitter</a>
+            <a href="#" class="btn btn-danger btn-sm mx-1">LinkedIn</a>
           </div>
 
         </div>
