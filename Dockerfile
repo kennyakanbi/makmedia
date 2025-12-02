@@ -1,7 +1,7 @@
-# Dockerfile (repo root)
+# Dockerfile (repo root) — installs libpq-dev so psycopg2 can build
 FROM python:3.12-slim
 
-# install system deps required to build some Python packages (psycopg2, Pillow)
+# system deps required to build psycopg2, Pillow, etc.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     gcc \
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# copy only requirements first for better caching
+# copy only requirements first for caching
 COPY requirements.txt /app/
 
 # upgrade pip and install Python deps
