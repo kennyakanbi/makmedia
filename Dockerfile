@@ -1,22 +1,34 @@
-# Dockerfile at repo root
+# Dockerfile (repo root)
 FROM python:3.12-slim
+
+# install system deps required to build some Python packages (psycopg2, Pillow)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    libpq-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy requirements first for caching
-COPY requirements.txt .
-RUN python -m pip install --upgrade pip
+# copy only requirements first for better caching
+COPY requirements.txt /app/
+
+# upgrade pip and install Python deps
+RUN python -m pip install --upgrade pip setuptools wheel
 RUN pip install -r requirements.txt
 
-# Copy project code
-COPY . .
+# copy project files
+COPY . /app
 
-# Create media directory
+# create media dir and copy entrypoint
 RUN mkdir -p /app/media
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 ENV PORT=8080
 EXPOSE 8080
 
-# Entrypoint: run migrations, collect static, then start server
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "project.wsgi", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "2", "--timeout", "120"]
