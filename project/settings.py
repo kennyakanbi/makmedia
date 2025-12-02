@@ -116,7 +116,7 @@ MEDIA_URL = "/media/"
 if DEBUG:
     MEDIA_ROOT = BASE_DIR / "project/media"   # local
 else:
-    MEDIA_ROOT = "/app/media"                 # Railway volume
+    MEDIA_ROOT = "/project/media"                 # Railway volume
 
 # ------------------------------
 # Internationalization
