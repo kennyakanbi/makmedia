@@ -12,44 +12,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ------------------------------
 # Env / debug
 # ------------------------------
-# Use a single canonical DEBUG boolean (readable from env)
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 if not SECRET_KEY:
     if DEBUG:
-        SECRET_KEY = "unsafe-local-secret-replace-me"  # only for local dev
+        SECRET_KEY = "unsafe-local-secret-replace-me"
     else:
         raise ImproperlyConfigured("SECRET_KEY environment variable is required in production")
 
-
 # ------------------------------
-# Hosts & trusted origins
+# Hosts & CSRF
 # ------------------------------
-# Provide a comma-separated ALLOWED_HOSTS via env, with sensible defaults
 _allowed = os.environ.get(
     "ALLOWED_HOSTS",
     "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app"
 )
 ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
-
-# For HTTPS proxies, add these to CSRF trusted origins (include scheme!)
-# If you deploy on other domains, add them to the env ALLOWED_HOSTS and here.
 CSRF_TRUSTED_ORIGINS = [
     f"https://{h.strip()}" for h in ALLOWED_HOSTS if h and not h.startswith("127.") and not h.startswith("localhost")
 ]
 
 # ------------------------------
-# Proxy / SSL settings (for Railway, behind a proxy)
+# Proxy / SSL (Railway)
 # ------------------------------
-# Accept X-Forwarded-Proto header from the proxy to detect HTTPS
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
-
-# Redirect to HTTPS in production only
 SECURE_SSL_REDIRECT = not DEBUG
-
-# Optional extra hardening in production
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -58,18 +47,18 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
 
 # ------------------------------
-# Database (Railway)
+# Database
 # ------------------------------
 DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
-        ssl_require=not DEBUG,  # require SSL in production
+        ssl_require=not DEBUG,
     )
 }
 
 # ------------------------------
-# Rest of your settings (apps/middleware/templates/etc.)
+# Installed apps / middleware
 # ------------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -112,12 +101,26 @@ TEMPLATES = [
     }
 ]
 
-# static, time zone, messages, default field, logging — keep as you had them
+# ------------------------------
+# Static files
+# ------------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# ------------------------------
+# Media files
+# ------------------------------
+MEDIA_URL = "/media/"
+if DEBUG:
+    MEDIA_ROOT = BASE_DIR / "project/media"   # local
+else:
+    MEDIA_ROOT = "/app/media"                 # Railway volume
+
+# ------------------------------
+# Internationalization
+# ------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
@@ -133,9 +136,3 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "root": {"handlers": ["console"], "level": "INFO"},
 }
-
-# Media files (uploads)
-MEDIA_URL = "/media/"
-MEDIA_ROOT = "/app/media"
-
-
