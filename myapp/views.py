@@ -15,49 +15,57 @@ def blog_list(request):
     return render(request, "blog_list.html", {"posts": posts})
 
 
+from django.shortcuts import render, get_object_or_404
+import re
+
 def blog_detail(request, slug):
     post = get_object_or_404(Blog, slug=slug)
 
+    # raw content
     raw = post.content or ""
-    # split paragraphs by blank lines (authors separate paragraphs with an empty line)
+
+    # OPTIONAL: convert **bold** → <strong> (if you want inline bold markers)
+    raw = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', raw, flags=re.DOTALL)
+
+    # split paragraphs by blank line (author separates with blank line)
     paragraphs = [p.strip() for p in re.split(r'\n\s*\n', raw) if p.strip()]
-    # fallback to single-line splits if no blank-line paragraphs found
     if not paragraphs:
         paragraphs = [p.strip() for p in raw.splitlines() if p.strip()]
 
-    extra_images = list(getattr(post, "extra_images", post).all()) if hasattr(post, "extra_images") else list(post.extra_images.all()) if hasattr(post, "extra_images") else []
-    # safer: try to get the related_name; if your related_name is "extra_images" it will work.
-    # If extra_images fails, set empty list:
-    if not isinstance(extra_images, list):
-        extra_images = list(extra_images)
+    # get extra images safely (use try/except in case relation missing)
+    try:
+        extra_images = list(post.extra_images.all())
+    except Exception:
+        extra_images = []
 
     n_par = len(paragraphs)
     n_img = len(extra_images)
 
-    # compute insert positions after paragraph i (1-based) to spread images evenly
+    # compute positions after which to insert images (1-based)
     insert_after = []
     if n_img > 0 and n_par > 0:
+        # spread images evenly: positions are 1..n_par
         for i in range(n_img):
             pos = round((i + 1) * n_par / (n_img + 1))
             pos = max(1, min(n_par, pos))
             insert_after.append(pos)
 
-    # Build content_blocks list: {"type":"p","text":...} or {"type":"img","image": <BlogImage>}
+    # build content_blocks list (ordered)
     content_blocks = []
     img_i = 0
     for i, para in enumerate(paragraphs, start=1):
         content_blocks.append({"type": "p", "text": para})
-        # insert any images scheduled after this paragraph
         while img_i < n_img and insert_after and insert_after[img_i] == i:
             content_blocks.append({"type": "img", "image": extra_images[img_i]})
             img_i += 1
 
-    # append leftover images at end
     while img_i < n_img:
         content_blocks.append({"type": "img", "image": extra_images[img_i]})
         img_i += 1
 
-    # always pass content_blocks even if empty
+    # DEBUG: temporarily print so you can see ordering in console
+    print("DEBUG: content_blocks:", [(b["type"], (b.get("text")[:30] if b["type"]=="p" else getattr(b["image"], 'image', None))) for b in content_blocks])
+
     return render(request, "blog_detail.html", {
         "post": post,
         "content_blocks": content_blocks,
