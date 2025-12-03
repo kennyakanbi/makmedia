@@ -113,10 +113,12 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Media files
 # ------------------------------
 MEDIA_URL = "/media/"
+
+# Railway volume is mounted at /app/media — use that in production
 if DEBUG:
-    MEDIA_ROOT = BASE_DIR / "project/media"   # local
+    MEDIA_ROOT = BASE_DIR / "project/media"   # local dev
 else:
-    MEDIA_ROOT = "/project/media"                 # Railway volume
+    MEDIA_ROOT = "/app/media"                 # production (Railway)
 
 # ------------------------------
 # Internationalization
