@@ -27,5 +27,5 @@ urlpatterns = [
     path('auth/', include('main.urls')),
   
 ] 
-# Serve media files in all environments (ok for small projects / testing)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG or True:  # Temporary for production testing
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
