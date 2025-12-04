@@ -1,0 +1,10 @@
+{
+  "name": "MakMedia",
+  "short_name": "MakMedia",
+  "start_url": "/",
+  "display": "standalone",
+  "description": "MakMedia Tech & Media Solutions",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": []
+}

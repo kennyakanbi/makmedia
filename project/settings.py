@@ -109,15 +109,10 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# Media files
+# recommended
 MEDIA_URL = "/media/"
+MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", "/app/media"))
 
-if DEBUG:
-    # local dev path (adjust if your local layout is different)
-    MEDIA_ROOT = BASE_DIR / "media"
-else:
-    # Railway mounts your volume at /app/media (confirmed from your logs/volume UI)
-    MEDIA_ROOT = Path("/app/media")
 
 # ------------------------------
 # Internationalization
