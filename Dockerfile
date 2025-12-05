@@ -22,5 +22,5 @@ RUN chmod +x /app/copy_media.sh
 ENTRYPOINT ["/app/copy_media.sh"]
 
 # CMD runs Django
-CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
 RUN apt-get update && apt-get install -y build-essential libpq-dev && rm -rf /var/lib/apt/lists/*
+CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:$PORT", "--workers", "2"]
