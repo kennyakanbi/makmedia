@@ -1,25 +1,33 @@
-# 1. Base image
+# Dockerfile - Django on Railway (Python 3.12 slim)
 FROM python:3.12-slim
 
-# 2. Set working directory
+# set workdir
 WORKDIR /app
 
-# 3. Install system dependencies
-RUN apt-get update && apt-get install -y \
+# install system deps (needed for some packages like psycopg2)
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+    curl \
+  && rm -rf /var/lib/apt/lists/*
 
-# 4. Copy requirements and install Python dependencies
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+# copy only requirements first (better layer caching)
+COPY requirements.txt /app/requirements.txt
 
-# 5. Copy the entire project
+# upgrade pip and install Python deps
+RUN python -m pip install --upgrade pip
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# copy project code
 COPY . /app/
 
-# 6. Make entrypoint executable
+# make entrypoint executable (entrypoint.sh must exist)
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# 7. Set the entrypoint
+# expose (informational only)
+EXPOSE 8000
+
+# use entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
