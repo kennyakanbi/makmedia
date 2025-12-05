@@ -1,28 +1,29 @@
 #!/bin/sh
+# entrypoint.sh - Run migrations, copy media to volume, collectstatic, then start gunicorn
 
-# Exit immediately if a command fails
 set -e
 
-# Paths
-LOCAL_MEDIA_DIR="/app/project/media"
-RAILWAY_MEDIA_DIR="/app/media"
+# If MEDIA source exists in repo, copy files into mounted volume /app/media
+# (This is safe: uses /app/media which Railway mounts from the volume)
+if [ -d "/app/project/media" ]; then
+  echo "📦 Copying media files into Railway volume..."
+  mkdir -p /app/media
+  cp -r /app/project/media/* /app/media/ 2>/dev/null || true
+  chmod -R a+rX /app/media || true
+  echo "✅ Media files copied and permissions set."
+fi
 
-echo "📦 Copying media files into Railway volume..."
+# Run migrations (safe to run every start)
+echo "Running migrations..."
+python manage.py migrate --noinput
 
-# Create target directory if it doesn't exist
-mkdir -p "$RAILWAY_MEDIA_DIR"
+# Collect static files
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
 
-# Copy files from local media to Railway volume
-cp -R "$LOCAL_MEDIA_DIR/"* "$RAILWAY_MEDIA_DIR/"
+# Ensure PORT is set (Railway will set it). Default to 8000 if missing (useful for local debugging)
+PORT=${PORT:-8000}
 
-# Ensure Django can read/write files
-chmod -R 755 "$RAILWAY_MEDIA_DIR"
-
-echo "✅ Media files copied and permissions set."
-
-# Start Django via gunicorn
+# Start gunicorn (use exec so it becomes PID 1)
 echo "🚀 Starting Django..."
-exec gunicorn project.wsgi:application \
-    --bind 0.0.0.0:8000 \
-    --workers 3 \
-    --threads 2
+exec gunicorn project.wsgi:application --bind 0.0.0.0:"${PORT}" --workers 2 --threads 2 --timeout 120
