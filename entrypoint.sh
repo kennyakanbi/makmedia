@@ -1,43 +1,28 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
 
-# Optional: show environment for debugging (comment out in prod)
-echo "=== Entrypoint start ==="
-echo "PORT=${PORT:-not-set}"
-echo "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE:-project.settings}"
+# Exit immediately if a command fails
+set -e
 
-# Wait for volume to be mounted (simple check loop)
-VOL=/app/media
-n=0
-while [ ! -d "$VOL" ] && [ "$n" -lt 6 ]; do
-  echo "Waiting for volume $VOL to be present..."
-  sleep 1
-  n=$((n+1))
-done
+# Paths
+LOCAL_MEDIA_DIR="/app/project/media"
+RAILWAY_MEDIA_DIR="/app/media"
 
-# Run migrations
-echo "Running migrations..."
-python manage.py migrate --noinput
+echo "📦 Copying media files into Railway volume..."
 
-# Copy committed media from repo into mounted volume if volume empty
-# This is safe / idempotent
-if [ -d "project/media" ]; then
-  echo "📦 Copying media files into Railway volume..."
-  mkdir -p /app/media
-  cp -r project/media/* /app/media/ 2>/dev/null || true
-  echo "✅ Media files copied."
-else
-  echo "No project/media directory in the image — skipping copy."
-fi
+# Create target directory if it doesn't exist
+mkdir -p "$RAILWAY_MEDIA_DIR"
 
-# Collect static files
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
+# Copy files from local media to Railway volume
+cp -R "$LOCAL_MEDIA_DIR/"* "$RAILWAY_MEDIA_DIR/"
 
-# Healthcheck test (optional, comment out to reduce noise)
-# python manage.py check
+# Ensure Django can read/write files
+chmod -R 755 "$RAILWAY_MEDIA_DIR"
 
-# Start Gunicorn on $PORT
-: "${PORT:?Environment variable PORT must be set by Railway}"
+echo "✅ Media files copied and permissions set."
+
+# Start Django via gunicorn
 echo "🚀 Starting Django..."
-exec gunicorn project.wsgi --bind 0.0.0.0:"$PORT" --workers 2 --threads 2 --timeout 120
+exec gunicorn project.wsgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers 3 \
+    --threads 2
