@@ -19,27 +19,29 @@
       </nav>
     </div>
   </div>
+  <!-- End Page Title -->
 
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
-    <h1 class="h1-color text-center"><b>Welcome to Mak Media Tech Blog</b></h1> <br>
+    <h1 class="h1-color text-center"><b>Welcome to Mak Media Tech Blog</b></h1>
     <p style="text-align:justify;">
       At Mak Media Tech, we believe technology and media are powerful tools for transformation. Our blog is a hub for exploring innovation, creativity, and African excellence.
     </p>
   </div>
+  <!-- End Section Title -->
 
   <!-- Blog Posts Section -->
   <section id="blog-posts" class="blog-posts section py-5">
     <div class="container">
       <div class="row gy-4">
-        {% for post in posts reversed %}
+        {% for post in posts %}
           <div class="col-lg-4 col-md-6">
             <article class="blog-card h-100 shadow-sm rounded overflow-hidden">
 
               <!-- Post Image -->
               <div class="post-img position-relative">
                 {% if post.image %}
-                  <img src="{{ post.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
+                  <img src="{{ post.image_url }}" class="img-fluid w-100" alt="{{ post.title }}">
                 {% else %}
                   <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid w-100" alt="No image available">
                 {% endif %}
@@ -62,11 +64,14 @@
             </article>
           </div>
         {% empty %}
-          <p>No blog posts available yet.</p>
+          <div class="col-12">
+            <p>No blog posts available yet.</p>
+          </div>
         {% endfor %}
       </div>
     </div>
   </section>
+  <!-- End Blog Posts Section -->
 
 </main>
 

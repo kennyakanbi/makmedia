@@ -25,15 +25,17 @@
       <div class="row justify-content-center">
         <article class="col-lg-8">
 
+          {# Featured main image at top (full width of the column) #}
           {% if post.image %}
             <figure class="mb-4">
-              <img src="{{ post.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
+              <img src="{{ post.image_url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
               {% if post.description %}
                 <figcaption class="small text-muted mt-2">{{ post.description }}</figcaption>
               {% endif %}
             </figure>
           {% endif %}
 
+          {# Render content blocks (paragraphs + inserted extra images) #}
           <div class="post-body">
             {% if content_blocks %}
               {% for block in content_blocks %}
@@ -45,7 +47,20 @@
                   {% endif %}
                 {% elif block.type == "img" %}
                   <div class="my-4">
-                    <img src="{{ block.image.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
+                    {# block.image is expected to be a BlogImage instance or contain .url property #}
+                    {% if block.image %}
+                      {# Prefer the safe property if available, otherwise try .image.url #}
+                      {% if block.image.url %}
+                        <img src="{{ block.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
+                      {% elif block.image.image and block.image.image.url %}
+                        <img src="{{ block.image.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
+                      {% else %}
+                        <img src="{% static 'assets/img/default.jpg' %}" loading="lazy" class="img-fluid rounded w-100" alt="Blog image fallback">
+                      {% endif %}
+                    {% else %}
+                      <img src="{% static 'assets/img/default.jpg' %}" loading="lazy" class="img-fluid rounded w-100" alt="Blog image fallback">
+                    {% endif %}
+
                     {% if block.image.caption %}
                       <p class="small text-muted mt-2 mb-0">{{ block.image.caption }}</p>
                     {% endif %}
@@ -53,6 +68,7 @@
                 {% endif %}
               {% endfor %}
             {% else %}
+              {# fallback: render whole content if no content_blocks #}
               <div>{{ post.content|linebreaks }}</div>
             {% endif %}
           </div>
@@ -70,7 +86,5 @@
       </div>
     </div>
   </section>
-
 </main>
 {% endblock body %}
-
