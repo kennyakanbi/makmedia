@@ -11,6 +11,7 @@ class ContactAdmin(admin.ModelAdmin):
         return obj.message[:50] + "..." if len(obj.message) > 50 else obj.message
     short_message.short_description = "Message"
 
+
 # Inline for extra blog images
 class BlogImageInline(admin.TabularInline):
     model = BlogImage
