@@ -1,0 +1,76 @@
+{% extends "basic.html" %}
+{% load static %}
+{% block title %}Blog{% endblock title %}
+{% block body %}
+
+<main class="main">
+
+  <!-- Page Title -->
+  <div class="page-title dark-background" data-aos="fade" style="background-image: url({% static 'assets/img/write.jpg' %});">
+    <div class="container position-relative">
+      <h1>Stay Up-To-Date With The Latest Trends and Insights in Digital Marketing and Technology</h1>
+      <p>Mak Media Tech Blog on Industrial News, Insights and Updates</p>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li class="active">Blog</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <!-- End Page Title -->
+
+  <!-- Section Title -->
+  <div class="container section-title" data-aos="fade-up">
+    <h1 class="h1-color text-center"><b>Welcome to Mak Media Tech Blog</b></h1> <br>
+    <p style="text-align:justify;">
+      At Mak Media Tech, we believe technology and media are powerful tools for transformation. Our blog is a hub for exploring innovation, creativity, and African excellence.
+    </p>
+  </div>
+  <!-- End Section Title -->
+
+  <!-- Blog Posts Section -->
+  <section id="blog-posts" class="blog-posts section py-5">
+    <div class="container">
+      <div class="row gy-4">
+        {% for post in posts reversed %}
+          <div class="col-lg-4 col-md-6">
+            <article class="blog-card h-100 shadow-sm rounded overflow-hidden">
+              
+              <!-- Post Image -->
+              <div class="post-img position-relative">
+                {% if post.extra_images.all %}
+                  <img src="{{ post.extra_images.all.0.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
+                {% else %}
+                  <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid w-100" alt="No image available">
+                {% endif %}
+              </div>
+
+              <!-- Post Meta -->
+              <div class="p-3">
+                <div class="meta small text-muted mb-2">
+                  <span><i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}</span> &nbsp;|&nbsp;
+                  <span><i class="bi bi-person"></i> {{ post.author_name }}</span>
+                </div>
+
+                <!-- Post Content -->
+                <h3 class="post-title">{{ post.title }}</h3>
+                <p class="post-description">{{ post.description|truncatewords:20 }}</p>
+                <a href="{% url 'blog_detail' post.slug %}" class="readmore stretched-link">
+                  <span>Read More</span><i class="bi bi-arrow-right"></i>
+                </a>
+
+              </div>
+            </article>
+          </div>
+        {% empty %}
+          <p>No blog posts available yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <!-- End Blog Posts Section -->
+
+</main>
+
+{% endblock body %}

@@ -1,26 +1,24 @@
 {% extends "basic.html" %}
 {% load static %}
-{% block title %} Sign-Up {% endblock title %}
+{% block title %} Login {% endblock title %}
 
 {% block stylecss %}
-<link 
-rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
-integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
 crossorigin="anonymous" referrerpolicy="no-referrer" />
 {% endblock stylecss %}
 
 {% block body %}
-
 <main class="main">
    <!-- Page Title -->
     <div class="page-title dark-background" data-aos="fade" style="background-image: url({% static 'assets/img/page.jpg' %});">
       <div class="container position-relative">
-        <h1>Apply Now For Mak Media Tech Training and Grow with Us!</h1>
+        <h1>Apply Now For Mak Media Tech Internship and Grow with Us!</h1>
         <p>Join Our Creative Journey</p>
         <nav class="breadcrumbs">
           <ol> 
             <li><a href="home.html">Home</a></li>
-            <li class="/">Training</li>
+            <li class="/">Internship</li>
           </ol>
         </nav>
       </div>
@@ -29,49 +27,42 @@ crossorigin="anonymous" referrerpolicy="no-referrer" />
 <div class="containe mt-4 p-2">
     <div class="row">
         <div class="col-md-4"></div>
-
-          <div class="col-md-4">
+        <div class="col-md-4">
             <br>
             <br>
             <br>
-            <br>
-            <h3 class='text-white bg-dark text-center p-3'> Sign Up Here </h3>
+            
+            <h3 class='text-white bg-dark text-center p-3'> Login </h3>
+            
             {% for message in messages %}
-            <div class="alert alert-{{message.tags}}alert-dismissible fade show" role="alert">
-                <strong>{{message}}</strong>
+            
+            <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+                <strong> {{message}}</strong>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             {% endfor %}
-        
+
             <div class="card p-2">
-                <form action="/auth/signup/" method="post">{% csrf_token %}
+                <form action="/auth/login/" method="post">{% csrf_token %}
                     <div class="form-group">
-                        <h5>
-                            <span><i class="bi bi-envelope navicon"></i> Email </label></span>
-                        </h5>
-                        <input type="text" class="form-control mb-3" name="email" required/>
+                        <h5><span><i class="bi bi-envelope navicon"></i> Email </label></span></h5>
+                        <input type="email" class="form-control mb-3" name="email" required/>
                     </div>
                     <div class="form-group">
                         <h5><span><i class="fas fa-key"></i> Password </label></span></h5>
                         <input type="password" class="form-control mb-3" name="pass1" required/>
                     </div>
-                    <div class="form-group">
-                        <h5><span><i class="fas fa-lock"></i> Confirm Password </label></span></h5>
-                        <input type="password" class="form-control mb-3" name="pass2" required/>
-                    </div>
 
                     <div class="d-grid gap-2">
-                        <button class="btn btn-dark" type="Submit">SignUp</button>
-
+                        <button class="btn btn-dark" type="Submit"> Login </button> 
+                    
                     </div>
+                    <br>
+                    Not a user ? <a href="/auth/signup/">Signup</a>
+                </div>
                 </form>
-                <br>
-                Already User ? <a href="/auth/login/">Login</a>
             </div>
-            </div>
-         
-
-
             <div class="col-md-4"></div>
-
             {% endblock body %}
+        </div>
+    </div>

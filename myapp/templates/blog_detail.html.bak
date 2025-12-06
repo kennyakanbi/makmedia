@@ -29,7 +29,7 @@
           {# Featured main image at top (full width of the column) #}
           {% if post.image %}
             <figure class="mb-4">
-              <img src="{% with static_path="media/"|add:post.image.name %}{% static static_path %}{% endwith %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
+              <img src="{{ post.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
               {% if post.description %}
                 <figcaption class="small text-muted mt-2">{{ post.description }}</figcaption>
               {% endif %}
@@ -49,7 +49,7 @@
                   {% endif %}
                 {% elif block.type == "img" %}
                   <div class="my-4">
-                    <img src="{% with static_path="media/"|add:block.image.image.name %}{% static static_path %}{% endwith %}" loading="lazy"
+                    <img src="{{ block.image.image.url }}" loading="lazy"
                          class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
                     {% if block.image.caption %}
                       <p class="small text-muted mt-2 mb-0">{{ block.image.caption }}</p>
