@@ -53,7 +53,7 @@
                       {% if block.image.url %}
                         <img src="{{ block.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
                       {% elif block.image.image and block.image.image.url %}
-                        <img src="{% with static_path="media/"|add:block.image.image.name %}{% static static_path %}{% endwith %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
+                        <img src="{{ block.image.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
                       {% else %}
                         <img src="{% static 'assets/img/default.jpg' %}" loading="lazy" class="img-fluid rounded w-100" alt="Blog image fallback">
                       {% endif %}
@@ -88,4 +88,3 @@
   </section>
 </main>
 {% endblock body %}
-
