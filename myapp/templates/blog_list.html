@@ -1,13 +1,13 @@
 {% extends "basic.html" %}
 {% load static %}
-
 {% block title %}Blog{% endblock title %}
 {% block body %}
 
 <main class="main">
 
   <!-- Page Title -->
-  <div class="page-title dark-background" data-aos="fade" style="background-image: url({% static 'assets/img/write.jpg' %});">
+  <div class="page-title dark-background" data-aos="fade"
+       style="background-image: url({% static 'assets/img/write.jpg' %});">
     <div class="container position-relative">
       <h1>Stay Up-To-Date With The Latest Trends and Insights in Digital Marketing and Technology</h1>
       <p>Mak Media Tech Blog on Industrial News, Insights and Updates</p>
@@ -23,7 +23,7 @@
 
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
-    <h1 class="h1-color text-center"><b>Welcome to Mak Media Tech Blog</b></h1>
+    <h1 class="h1-color text-center"><b>Welcome to Mak Media Tech Blog</b></h1> <br>
     <p style="text-align:justify;">
       At Mak Media Tech, we believe technology and media are powerful tools for transformation. Our blog is a hub for exploring innovation, creativity, and African excellence.
     </p>
@@ -34,14 +34,21 @@
   <section id="blog-posts" class="blog-posts section py-5">
     <div class="container">
       <div class="row gy-4">
-        {% for post in posts %}
+        {% for post in posts reversed %}
           <div class="col-lg-4 col-md-6">
             <article class="blog-card h-100 shadow-sm rounded overflow-hidden">
 
               <!-- Post Image -->
               <div class="post-img position-relative">
-                {% if post.image %}
-                  <img src="{{ post.image_url }}" class="img-fluid w-100" alt="{{ post.title }}">
+                {% if post.extra_images.all %}
+                  {# Use first extra image if available; static fallback if necessary #}
+                  {% with static_path="media/"|add:post.extra_images.all.0.image.name %}
+                    <img src="{% static static_path %}" class="img-fluid w-100" alt="{{ post.title }}">
+                  {% endwith %}
+                {% elif post.image %}
+                  {% with static_path="media/"|add:post.image.name %}
+                    <img src="{% static static_path %}" class="img-fluid w-100" alt="{{ post.title }}">
+                  {% endwith %}
                 {% else %}
                   <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid w-100" alt="No image available">
                 {% endif %}
@@ -60,6 +67,7 @@
                 <a href="{% url 'blog_detail' post.slug %}" class="readmore stretched-link">
                   <span>Read More</span><i class="bi bi-arrow-right"></i>
                 </a>
+
               </div>
             </article>
           </div>
