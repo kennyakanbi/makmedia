@@ -25,18 +25,17 @@
     <div class="container">
       <div class="row justify-content-center">
         <article class="col-lg-8">
-              <!-- DEBUG: content_blocks_length={{ content_blocks|length }} extra_images={% for ei in post.extra_images.all %}{{ ei.image.name }}{% if not forloop.last %},{% endif %}{% endfor %} -->
 
           {# Featured main image at top (full width of the column) #}
           {% if post.image %}
-            {% with static_path="media/"|add:post.image.name %}
-              <figure class="mb-4">
+            <figure class="mb-4">
+              {% with static_path="media/"|add:post.image.name %}
                 <img src="{% static static_path %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
-                {% if post.description %}
-                  <figcaption class="small text-muted mt-2">{{ post.description }}</figcaption>
-                {% endif %}
-              </figure>
-            {% endwith %}
+              {% endwith %}
+              {% if post.description %}
+                <figcaption class="small text-muted mt-2">{{ post.description }}</figcaption>
+              {% endif %}
+            </figure>
           {% endif %}
 
           {# Render content blocks (paragraphs + inserted extra images) #}
@@ -51,13 +50,16 @@
                   {% endif %}
                 {% elif block.type == "img" %}
                   <div class="my-4">
+                    {# Prefer static('media/' + stored_name) so production serves the image #}
                     {% if block.image and block.image.image %}
                       {% with static_path="media/"|add:block.image.image.name %}
                         <img src="{% static static_path %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
                       {% endwith %}
-                      {% if block.image.caption %}
-                        <p class="small text-muted mt-2 mb-0">{{ block.image.caption }}</p>
-                      {% endif %}
+                    {% else %}
+                      <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid rounded w-100" alt="No image available">
+                    {% endif %}
+                    {% if block.image.caption %}
+                      <p class="small text-muted mt-2 mb-0">{{ block.image.caption }}</p>
                     {% endif %}
                   </div>
                 {% endif %}
