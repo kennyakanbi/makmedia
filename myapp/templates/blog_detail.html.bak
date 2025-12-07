@@ -6,7 +6,8 @@
 <main class="main">
 
   <!-- Hero / Page Title -->
-  <div class="page-title dark-background" data-aos="fade" style="background-image: url({% static 'assets/img/write.jpg' %});">
+  <div class="page-title dark-background" data-aos="fade"
+       style="background-image: url({% static 'assets/img/write.jpg' %});">
     <div class="container text-center py-5">
       <h1 class="display-4">{{ post.title }}</h1>
       <p class="text-muted mb-0">
@@ -27,12 +28,14 @@
 
           {# Featured main image at top (full width of the column) #}
           {% if post.image %}
-            <figure class="mb-4">
-              <img src="{{ post.image_url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
-              {% if post.description %}
-                <figcaption class="small text-muted mt-2">{{ post.description }}</figcaption>
-              {% endif %}
-            </figure>
+            {% with static_path="media/"|add:post.image.name %}
+              <figure class="mb-4">
+                <img src="{% static static_path %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
+                {% if post.description %}
+                  <figcaption class="small text-muted mt-2">{{ post.description }}</figcaption>
+                {% endif %}
+              </figure>
+            {% endwith %}
           {% endif %}
 
           {# Render content blocks (paragraphs + inserted extra images) #}
@@ -47,22 +50,13 @@
                   {% endif %}
                 {% elif block.type == "img" %}
                   <div class="my-4">
-                    {# block.image is expected to be a BlogImage instance or contain .url property #}
-                    {% if block.image %}
-                      {# Prefer the safe property if available, otherwise try .image.url #}
-                      {% if block.image.url %}
-                        <img src="{{ block.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
-                      {% elif block.image.image and block.image.image.url %}
-                        <img src="{{ block.image.image.url }}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
-                      {% else %}
-                        <img src="{% static 'assets/img/default.jpg' %}" loading="lazy" class="img-fluid rounded w-100" alt="Blog image fallback">
+                    {% if block.image and block.image.image %}
+                      {% with static_path="media/"|add:block.image.image.name %}
+                        <img src="{% static static_path %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
+                      {% endwith %}
+                      {% if block.image.caption %}
+                        <p class="small text-muted mt-2 mb-0">{{ block.image.caption }}</p>
                       {% endif %}
-                    {% else %}
-                      <img src="{% static 'assets/img/default.jpg' %}" loading="lazy" class="img-fluid rounded w-100" alt="Blog image fallback">
-                    {% endif %}
-
-                    {% if block.image.caption %}
-                      <p class="small text-muted mt-2 mb-0">{{ block.image.caption }}</p>
                     {% endif %}
                   </div>
                 {% endif %}
