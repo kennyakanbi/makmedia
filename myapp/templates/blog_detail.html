@@ -25,6 +25,7 @@
     <div class="container">
       <div class="row justify-content-center">
         <article class="col-lg-8">
+              <!-- DEBUG: content_blocks_length={{ content_blocks|length }} extra_images={% for ei in post.extra_images.all %}{{ ei.image.name }}{% if not forloop.last %},{% endif %}{% endfor %} -->
 
           {# Featured main image at top (full width of the column) #}
           {% if post.image %}
