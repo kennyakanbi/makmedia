@@ -1,87 +1,93 @@
 {% extends "basic.html" %}
 {% load static %}
 
-{% block title %}{{ post.title }}{% endblock title %}
 {% block body %}
 <main class="main">
+  <div class="container my-5">
 
-  <!-- Hero / Page Title -->
-  <div class="page-title dark-background" data-aos="fade"
-       style="background-image: url({% static 'assets/img/write.jpg' %});">
-    <div class="container text-center py-5">
-      <h1 class="display-4">{{ post.title }}</h1>
-      <p class="text-muted mb-0">
-        <i class="bi bi-person"></i> {{ post.author_name }} &nbsp;|&nbsp;
-        <i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}
-      </p>
-      {% if post.description %}
-        <p class="small text-muted mt-2">{{ post.description }}</p>
-      {% endif %}
+    <!-- Back link -->
+    <div class="mb-3">
+      <a href="{% url 'blog_list' %}" class="btn btn-sm btn-outline-secondary">
+        &larr; Back to Blog
+      </a>
     </div>
-  </div>
 
-  <!-- Blog Content -->
-  <section class="blog-content section py-5">
-    <div class="container">
-      <div class="row justify-content-center">
-        <article class="col-lg-8">
+    <!-- Featured / Header Image -->
+    <div class="mb-4">
+      <img
+        src="{% if post.image %}{{ post.image.url }}{% else %}{% static 'assets/img/default.jpg' %}{% endif %}"
+        alt="{{ post.title|default:'Blog Image' }}"
+        class="img-fluid rounded w-100"
+        loading="lazy">
+    </div>
 
-          {# Featured main image at top (full width of the column) #}
-          {% if post.image %}
-            <figure class="mb-4">
-              {% with static_path="media/"|add:post.image.name %}
-                <img src="{% static static_path %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ post.title }}">
-              {% endwith %}
-              {% if post.description %}
-                <figcaption class="small text-muted mt-2">{{ post.description }}</figcaption>
+    <!-- Title -->
+    <h1 class="mb-3">{{ post.title|default:"No Title" }}</h1>
+
+    <!-- Meta -->
+    <div class="mb-4 text-muted small">
+      <span class="me-3"><i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}</span>
+      <span><i class="bi bi-person"></i> {{ post.author_name|default:"Unknown Author" }}</span>
+    </div>
+
+    <!-- Content: prefer content_blocks (from your view) but fallback to raw content -->
+    <article class="blog-content mb-5">
+      {% if content_blocks %}
+        {% for block in content_blocks %}
+          {% if block.type == "p" %}
+            <p class="mb-3">{{ block.text|safe }}</p>
+
+          {% elif block.type == "img" %}
+            <div class="mb-4">
+              <img src="{{ block.image_url }}" alt="{{ post.title }}" class="img-fluid rounded w-100" loading="lazy">
+            </div>
+
+          {% elif block.type == "h2" %}
+            <h2 class="mt-4 mb-3">{{ block.text }}</h2>
+
+          {% elif block.type == "quote" %}
+            <blockquote class="blockquote ps-3 border-start border-3 mb-3">
+              <p class="mb-1">{{ block.text }}</p>
+              {% if block.author %}
+                <footer class="blockquote-footer">{{ block.author }}</footer>
               {% endif %}
-            </figure>
+            </blockquote>
           {% endif %}
-
-          {# Render content blocks (paragraphs + inserted extra images) #}
-          <div class="post-body">
-            {% if content_blocks %}
-              {% for block in content_blocks %}
-                {% if block.type == "p" %}
-                  {% if forloop.first %}
-                    <p class="lead" style="text-align: justify;">{{ block.text|safe }}</p>
-                  {% else %}
-                    <p style="text-align: justify;">{{ block.text|safe }}</p>
-                  {% endif %}
-                {% elif block.type == "img" %}
-                  <div class="my-4">
-                    {# Prefer static('media/' + stored_name) so production serves the image #}
-                    {% if block.image and block.image.image %}
-                      {% with static_path="media/"|add:block.image.image.name %}
-                        <img src="{% static static_path %}" loading="lazy" class="img-fluid rounded w-100" alt="{{ block.image.caption|default:'Blog image' }}">
-                      {% endwith %}
-                    {% else %}
-                      <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid rounded w-100" alt="No image available">
-                    {% endif %}
-                    {% if block.image.caption %}
-                      <p class="small text-muted mt-2 mb-0">{{ block.image.caption }}</p>
-                    {% endif %}
-                  </div>
-                {% endif %}
-              {% endfor %}
-            {% else %}
-              {# fallback: render whole content if no content_blocks #}
-              <div>{{ post.content|linebreaks }}</div>
-            {% endif %}
+        {% endfor %}
+      {% else %}
+        {% if post.content %}
+          <div class="mb-4">
+            {{ post.content|linebreaks }}
           </div>
+        {% else %}
+          <p>Content not available.</p>
+        {% endif %}
+      {% endif %}
+    </article>
 
-          <hr class="my-5">
-
-          <!-- share buttons -->
-          <div class="d-flex justify-content-center gap-2">
-            <a href="#" class="btn btn-primary btn-sm">Share on Facebook</a>
-            <a href="#" class="btn btn-info btn-sm">Share on Twitter</a>
-            <a href="#" class="btn btn-secondary btn-sm">Share on LinkedIn</a>
-          </div>
-
-        </article>
+    <!-- Optional author box (simple) -->
+    {% if post.author_name or post.author %}
+    <div class="author-info mb-5 p-3 bg-light rounded shadow-sm d-flex align-items-center">
+      {% if post.author and post.author.profile_image %}
+        <img src="{{ post.author.profile_image.url }}" class="rounded-circle me-3" width="64" height="64" alt="{{ post.author.get_full_name }}">
+      {% else %}
+        <img src="{% static 'assets/img/default-avatar.png' %}" class="rounded-circle me-3" width="64" height="64" alt="Author avatar">
+      {% endif %}
+      <div>
+        <strong>{{ post.author.get_full_name|default:post.author_name|default:"Unknown Author" }}</strong><br>
+        {% if post.author and post.author.bio %}
+          <small class="text-muted">{{ post.author.bio }}</small>
+        {% endif %}
       </div>
     </div>
-  </section>
+    {% endif %}
+
+    <!-- Simple footer area for this post -->
+    <div class="post-footer mt-4 pt-3 border-top">
+      <a href="{% url 'blog_list' %}" class="me-3">← Back to all posts</a>
+      <span class="text-muted">Published {{ post.created_at|date:"F j, Y" }}</span>
+    </div>
+
+  </div>
 </main>
-{% endblock body %}
+{% endblock %}
