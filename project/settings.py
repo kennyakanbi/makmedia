@@ -24,13 +24,15 @@ if not SECRET_KEY:
 # ------------------------------
 # Hosts & CSRF
 # ------------------------------
-ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app"
-).split(",")
+ALLOWED_HOSTS = [
+    h.strip() for h in os.environ.get(
+        "ALLOWED_HOSTS",
+        "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app"
+    ).split(",") if h.strip()
+]
 
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{h.strip()}" for h in ALLOWED_HOSTS if h and not h.startswith("127.") and not h.startswith("localhost")
+    f"https://{h}" for h in ALLOWED_HOSTS if not h.startswith("127.") and not h.startswith("localhost")
 ]
 
 # ------------------------------
@@ -121,13 +123,19 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Media files
 # ------------------------------
 if DEBUG:
-    # Use local media in development
+    # Local media in development
     MEDIA_URL = "/media/"
     MEDIA_ROOT = BASE_DIR / "media"
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 else:
+    # Cloudinary storage in production
     DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
     MEDIA_URL = "/media/"  # optional, Cloudinary generates its own URLs
+
+# Automatically configure Cloudinary if in production
+if not DEBUG:
+    import cloudinary
+    cloudinary.config()  # Reads CLOUDINARY_URL env variable
 
 # ------------------------------
 # Internationalization
