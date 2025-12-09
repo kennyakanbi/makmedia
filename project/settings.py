@@ -1,5 +1,3 @@
-# settings.py
-
 from pathlib import Path
 import os
 from django.core.exceptions import ImproperlyConfigured
@@ -24,13 +22,13 @@ if not SECRET_KEY:
         raise ImproperlyConfigured("SECRET_KEY environment variable is required in production")
 
 # ------------------------------
-# Allowed Hosts & CSRF
+# Hosts & CSRF
 # ------------------------------
-_allowed = os.environ.get(
+ALLOWED_HOSTS = os.environ.get(
     "ALLOWED_HOSTS",
     "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app"
-)
-ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
+).split(",")
+
 CSRF_TRUSTED_ORIGINS = [
     f"https://{h.strip()}" for h in ALLOWED_HOSTS if h and not h.startswith("127.") and not h.startswith("localhost")
 ]
@@ -72,7 +70,7 @@ INSTALLED_APPS = [
     "myapp",
     "main",
     "cloudinary",
-    "cloudinary_storage",  # Django Cloudinary storage backend
+    "cloudinary_storage",
 ]
 
 # ------------------------------
@@ -120,13 +118,22 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ------------------------------
-# Media files (Cloudinary)
+# Media files
 # ------------------------------
-# All FileField/ImageField uploads will be stored in Cloudinary
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-
-# Optional: keep MEDIA_URL for legacy templates (Cloudinary provides its own URLs)
-MEDIA_URL = "/media/"
+if DEBUG:
+    # Use local media in development
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+else:
+    # Use Cloudinary in production
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+        "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+        "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+    }
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+    MEDIA_URL = "/media/"  # optional, Cloudinary generates its own URLs
 
 # ------------------------------
 # Internationalization
