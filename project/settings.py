@@ -1,16 +1,18 @@
-from django.core.exceptions import ImproperlyConfigured
+# settings.py
+
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
 from django.contrib.messages import constants as messages
 import dj_database_url
 
 # ------------------------------
-# Base path
+# Base directory
 # ------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ------------------------------
-# Env / debug
+# Debug & Secret Key
 # ------------------------------
 DEBUG = os.environ.get("DEBUG", "False").lower() in ("1", "true", "yes")
 
@@ -22,7 +24,7 @@ if not SECRET_KEY:
         raise ImproperlyConfigured("SECRET_KEY environment variable is required in production")
 
 # ------------------------------
-# Hosts & CSRF
+# Allowed Hosts & CSRF
 # ------------------------------
 _allowed = os.environ.get(
     "ALLOWED_HOSTS",
@@ -34,7 +36,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # ------------------------------
-# Proxy / SSL (Railway)
+# Security & SSL (Railway)
 # ------------------------------
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
@@ -58,7 +60,7 @@ DATABASES = {
 }
 
 # ------------------------------
-# Installed apps / middleware
+# Installed Apps
 # ------------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -70,9 +72,12 @@ INSTALLED_APPS = [
     "myapp",
     "main",
     "cloudinary",
-    "cloudinary_storage",
+    "cloudinary_storage",  # Django Cloudinary storage backend
 ]
 
+# ------------------------------
+# Middleware
+# ------------------------------
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -84,6 +89,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# ------------------------------
+# Templates
+# ------------------------------
 ROOT_URLCONF = "project.urls"
 WSGI_APPLICATION = "project.wsgi.application"
 
@@ -104,23 +112,21 @@ TEMPLATES = [
 ]
 
 # ------------------------------
-# Static files
+# Static files (WhiteNoise)
 # ------------------------------
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# recommended
-MEDIA_URL = "/media/"
-MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", "/app/media"))
-
-# Use Cloudinary for media file storage in production
-# All ImageField/FileField saves will be uploaded to Cloudinary
+# ------------------------------
+# Media files (Cloudinary)
+# ------------------------------
+# All FileField/ImageField uploads will be stored in Cloudinary
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-# Optionally keep MEDIA_URL defined (not required for Cloudinary)
-# MEDIA_URL = "/media/"   # you already have MEDIA_URL; it's fine to keep it
+# Optional: keep MEDIA_URL for legacy templates (Cloudinary provides its own URLs)
+MEDIA_URL = "/media/"
 
 # ------------------------------
 # Internationalization
@@ -134,6 +140,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MESSAGES_TAGS = {messages.ERROR: "danger"}
 APPEND_SLASH = True
 
+# ------------------------------
+# Logging
+# ------------------------------
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

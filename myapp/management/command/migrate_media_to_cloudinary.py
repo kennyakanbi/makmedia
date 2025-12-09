@@ -1,78 +1,62 @@
 # myapp/management/commands/migrate_media_to_cloudinary.py
-import os
-from django.core.management.base import BaseCommand
-from django.core.files import File
-from django.conf import settings
 
-from myapp.models import Blog
-# If you have a related extra image model, import it too:
-# from myapp.models import ExtraImage
+import os
+from django.core.files import File
+from django.core.management.base import BaseCommand
+from myapp.models import Blog, ExtraImage  # Add all models with image fields here
 
 class Command(BaseCommand):
-    help = "Upload existing local media files referenced in ImageFields to Cloudinary and update model fields."
+    help = "Upload existing local media files to Cloudinary and update model fields."
 
     def handle(self, *args, **options):
-        count = 0
-        skipped = 0
-        errors = 0
+        total_uploaded = 0
+        total_skipped = 0
+        total_errors = 0
 
-        # Migrate Blog.image
-        for post in Blog.objects.all():
-            try:
-                img_field = getattr(post, "image", None)
-                if not img_field:
-                    skipped += 1
-                    self.stdout.write(self.style.NOTICE(f"Skipping (no image): Blog {post.pk}"))
-                    continue
+        # Helper function to process a queryset
+        def migrate_queryset(queryset, field_name="image"):
+            nonlocal total_uploaded, total_skipped, total_errors
+            for obj in queryset:
+                try:
+                    img_field = getattr(obj, field_name, None)
 
-                # If already a remote URL (starts with http), skip
-                url = getattr(img_field, "url", "")
-                if url and url.startswith("http"):
-                    skipped += 1
-                    self.stdout.write(self.style.NOTICE(f"Already remote, skipping: Blog {post.pk} -> {url}"))
-                    continue
+                    if not img_field:
+                        total_skipped += 1
+                        self.stdout.write(self.style.NOTICE(f"Skipping (no image): {obj}"))
+                        continue
 
-                # Local path to file
-                local_path = getattr(img_field, "path", None)
-                if not local_path or not os.path.exists(local_path):
-                    errors += 1
-                    self.stdout.write(self.style.WARNING(f"Local file missing for Blog {post.pk}: {local_path}"))
-                    continue
+                    # Skip if already a remote URL
+                    if img_field.url and img_field.url.startswith("http"):
+                        total_skipped += 1
+                        self.stdout.write(self.style.NOTICE(f"Already remote, skipping: {obj} -> {img_field.url}"))
+                        continue
 
-                with open(local_path, "rb") as f:
-                    django_file = File(f)
-                    name = os.path.basename(local_path)
-                    # saving the field triggers upload via DEFAULT_FILE_STORAGE
-                    post.image.save(name, django_file, save=True)
+                    local_path = getattr(img_field, "path", None)
+                    if not local_path or not os.path.exists(local_path):
+                        total_errors += 1
+                        self.stdout.write(self.style.WARNING(f"Local file missing for {obj}: {local_path}"))
+                        continue
 
-                count += 1
-                self.stdout.write(self.style.SUCCESS(f"Uploaded Blog {post.pk} -> {post.image.url}"))
+                    # Upload to Cloudinary via default storage
+                    with open(local_path, "rb") as f:
+                        django_file = File(f)
+                        name = os.path.basename(local_path)
+                        img_field.save(name, django_file, save=True)
 
-            except Exception as exc:
-                errors += 1
-                self.stdout.write(self.style.ERROR(f"Failed Blog {post.pk}: {exc}"))
+                    total_uploaded += 1
+                    self.stdout.write(self.style.SUCCESS(f"Uploaded {obj} -> {img_field.url}"))
 
-        # If you have a related ExtraImage model, migrate them similarly.
-        # Uncomment and adapt the code below if needed:
-        #
-        # for extra in ExtraImage.objects.all():
-        #     try:
-        #         img_field = getattr(extra, "image", None)
-        #         if not img_field:
-        #             continue
-        #         url = getattr(img_field, "url", "")
-        #         if url and url.startswith("http"):
-        #             continue
-        #         local_path = getattr(img_field, "path", None)
-        #         if not local_path or not os.path.exists(local_path):
-        #             self.stdout.write(self.style.WARNING(f"Local file missing for ExtraImage {extra.pk}: {local_path}"))
-        #             continue
-        #         with open(local_path, "rb") as f:
-        #             django_file = File(f)
-        #             name = os.path.basename(local_path)
-        #             extra.image.save(name, django_file, save=True)
-        #         self.stdout.write(self.style.SUCCESS(f"Uploaded ExtraImage {extra.pk} -> {extra.image.url}"))
-        #     except Exception as exc:
-        #         self.stdout.write(self.style.ERROR(f"Failed ExtraImage {extra.pk}: {exc}"))
+                except Exception as e:
+                    total_errors += 1
+                    self.stdout.write(self.style.ERROR(f"Failed {obj}: {e}"))
 
-        self.stdout.write(self.style.SUCCESS(f"Done. Uploaded: {count}. Skipped: {skipped}. Errors: {errors}"))
+        # Migrate Blogs
+        migrate_queryset(Blog.objects.all())
+
+        # Migrate ExtraImages
+        migrate_queryset(ExtraImage.objects.all())
+
+        # Final summary
+        self.stdout.write(self.style.SUCCESS(
+            f"Migration complete. Uploaded: {total_uploaded}, Skipped: {total_skipped}, Errors: {total_errors}"
+        ))
