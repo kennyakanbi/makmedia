@@ -19,7 +19,6 @@
       </nav>
     </div>
   </div>
-  <!-- End Page Title -->
 
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
@@ -28,7 +27,6 @@
       At Mak Media Tech, we believe technology and media are powerful tools for transformation. Our blog is a hub for exploring innovation, creativity, and African excellence.
     </p>
   </div>
-  <!-- End Section Title -->
 
   <!-- Blog Posts Section -->
   <section id="blog-posts" class="blog-posts section py-5">
@@ -41,14 +39,9 @@
               <!-- Post Image -->
               <div class="post-img position-relative">
                 {% if post.extra_images.all %}
-                  {# Use first extra image if available; static fallback if necessary #}
-                  {% with static_path="media/"|add:post.extra_images.all.0.image.name %}
-                    <img src="{% static static_path %}" class="img-fluid w-100" alt="{{ post.title }}">
-                  {% endwith %}
+                  <img src="{{ post.extra_images.all.0.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
                 {% elif post.image %}
-                  {% with static_path="media/"|add:post.image.name %}
-                    <img src="{% static static_path %}" class="img-fluid w-100" alt="{{ post.title }}">
-                  {% endwith %}
+                  <img src="{{ post.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
                 {% else %}
                   <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid w-100" alt="No image available">
                 {% endif %}
@@ -58,7 +51,7 @@
               <div class="p-3">
                 <div class="meta small text-muted mb-2">
                   <span><i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}</span> &nbsp;|&nbsp;
-                  <span><i class="bi bi-person"></i> {{ post.author_name }}</span>
+                  <span><i class="bi bi-person"></i> {{ post.author_name|default:"Unknown Author" }}</span>
                 </div>
 
                 <!-- Post Content -->
@@ -67,7 +60,6 @@
                 <a href="{% url 'blog_detail' post.slug %}" class="readmore stretched-link">
                   <span>Read More</span><i class="bi bi-arrow-right"></i>
                 </a>
-
               </div>
             </article>
           </div>
@@ -79,7 +71,6 @@
       </div>
     </div>
   </section>
-  <!-- End Blog Posts Section -->
 
 </main>
 
