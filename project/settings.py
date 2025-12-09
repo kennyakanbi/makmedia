@@ -69,6 +69,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "myapp",
     "main",
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
 MIDDLEWARE = [
@@ -113,6 +115,12 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", "/app/media"))
 
+# Use Cloudinary for media file storage in production
+# All ImageField/FileField saves will be uploaded to Cloudinary
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+# Optionally keep MEDIA_URL defined (not required for Cloudinary)
+# MEDIA_URL = "/media/"   # you already have MEDIA_URL; it's fine to keep it
 
 # ------------------------------
 # Internationalization
