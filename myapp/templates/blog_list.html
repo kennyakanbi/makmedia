@@ -1,8 +1,8 @@
 {% extends "basic.html" %}
 {% load static %}
 {% block title %}Blog{% endblock title %}
-{% block body %}
 
+{% block body %}
 <main class="main">
 
   <!-- Page Title -->
@@ -38,8 +38,8 @@
 
               <!-- Post Image -->
               <div class="post-img position-relative">
-                {% if post.extra_images.all %}
-                  <img src="{{ post.extra_images.all.0.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
+                {% if post.extra_images.exists %}
+                  <img src="{{ post.extra_images.first.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
                 {% elif post.image %}
                   <img src="{{ post.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
                 {% else %}
@@ -61,6 +61,7 @@
                   <span>Read More</span><i class="bi bi-arrow-right"></i>
                 </a>
               </div>
+
             </article>
           </div>
         {% empty %}
@@ -73,5 +74,4 @@
   </section>
 
 </main>
-
 {% endblock body %}
