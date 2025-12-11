@@ -1,64 +1,62 @@
 {% extends "basic.html" %}
 {% load static %}
+
 {% block title %}{{ post.title }}{% endblock title %}
 
 {% block body %}
-<main class="main">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-  <!-- Page Title -->
-  <div class="page-title dark-background" data-aos="fade"
-       style="background-image: url({% static 'assets/img/write.jpg' %});">
-    <div class="container position-relative">
-      <h1>{{ post.title }}</h1>
-      <nav class="breadcrumbs">
-        <ol>
-          <li><a href="{% url 'home' %}">Home</a></li>
-          <li><a href="{% url 'blog_list' %}">Blog</a></li>
-          <li class="active">{{ post.title }}</li>
-        </ol>
-      </nav>
-    </div>
-  </div>
+            <!-- Blog Card -->
+            <div class="card shadow-sm mb-4">
+                <!-- Blog Image -->
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top img-fluid rounded" alt="{{ post.title }}">
+                {% else %}
+                    <img src="{% static 'assets/img/default-blog.png' %}" class="card-img-top img-fluid rounded" alt="Default Blog">
+                {% endif %}
 
-  <!-- Blog Content Section -->
-  <section class="blog-detail section py-5">
-    <div class="container">
-      
-      <!-- Featured Image -->
-      <div class="post-img mb-4">
-        {% if post.extra_images.exists %}
-          <img src="{{ post.extra_images.first.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
-        {% elif post.image %}
-          <img src="{{ post.image.url }}" class="img-fluid w-100" alt="{{ post.title }}">
-        {% else %}
-          <img src="{% static 'assets/img/default.jpg' %}" class="img-fluid w-100" alt="No image available">
-        {% endif %}
-      </div>
+                <div class="card-body">
+                    <!-- Blog Title -->
+                    <h1 class="card-title mb-3">{{ post.title }}</h1>
 
-      <!-- Post Meta -->
-      <div class="meta small text-muted mb-3">
-        <span><i class="bi bi-calendar"></i> {{ post.created_at|date:"M d, Y" }}</span> &nbsp;|&nbsp;
-        <span><i class="bi bi-person"></i> {{ post.author_name|default:"Unknown Author" }}</span>
-      </div>
+                    <!-- Author Info -->
+                    <div class="d-flex align-items-center mb-4">
+                        {% if post.author and post.author.profile_image %}
+                            <img src="{{ post.author.profile_image.url }}" class="rounded-circle me-3" style="width:60px; height:60px; object-fit:cover;" alt="{{ post.author.get_full_name }}">
+                        {% else %}
+                            <img src="{% static 'assets/img/default-avatar.png' %}" class="rounded-circle me-3" style="width:60px; height:60px; object-fit:cover;" alt="Author">
+                        {% endif %}
+                        <div>
+                            <h6 class="mb-0">{{ post.author.get_full_name|default:"Mak Media Tech" }}</h6>
+                            <small class="text-muted">{{ post.published_at|date:"F d, Y" }}</small>
+                        </div>
+                    </div>
 
-      <!-- Post Body -->
-      <div class="post-content" style="text-align:justify;">
-        {{ post.content|safe }}
-      </div>
-
-      <!-- Extra Images Gallery -->
-      {% if post.extra_images.exists %}
-        <div class="extra-images mt-4 row g-3">
-          {% for img in post.extra_images.all %}
-            <div class="col-md-4">
-              <img src="{{ img.image.url }}" class="img-fluid rounded" alt="Extra image">
+                    <!-- Blog Content -->
+                    <div class="blog-content">
+                        {{ post.content|safe }}
+                    </div>
+                </div>
             </div>
-          {% endfor %}
+
+            <!-- Blog Image Gallery -->
+            {% if post.blogimage_set.all %}
+                <div class="row g-3">
+                    {% for img in post.blogimage_set.all %}
+                        <div class="col-md-4">
+                            {% if img.image %}
+                                <img src="{{ img.image.url }}" class="img-fluid rounded" alt="{{ post.title }}">
+                            {% else %}
+                                <img src="{% static 'assets/img/default-blog.png' %}" class="img-fluid rounded" alt="Default Image">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
         </div>
-      {% endif %}
-
     </div>
-  </section>
-
-</main>
+</div>
 {% endblock body %}
