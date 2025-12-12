@@ -26,10 +26,17 @@ if not SECRET_KEY:
 # ------------------------------
 # Allowed Hosts & CSRF
 # ------------------------------
-ALLOWED_HOSTS = os.environ.get(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app,www.makmedia.tech"
-).split(",")
+env_hosts = os.environ.get("ALLOWED_HOSTS")
+if env_hosts:
+    ALLOWED_HOSTS = [h.strip() for h in env_hosts.split(",") if h.strip()]
+else:
+    ALLOWED_HOSTS = [
+        "127.0.0.1",
+        "localhost",
+        "makmedia-production.up.railway.app",
+        "generous-vitality.up.railway.app",
+        "www.makmedia.tech",
+    ]
 
 CSRF_TRUSTED_ORIGINS = [
     f"https://{h.strip()}" for h in ALLOWED_HOSTS if h and not h.startswith("127.") and not h.startswith("localhost")
