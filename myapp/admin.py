@@ -35,7 +35,7 @@ class InternshipAdmin(admin.ModelAdmin):
         "offer_status",
         "start_date",
         "end_date",
-        "timeStamp",
+        "timestamp",  # lowercase field
     )
     search_fields = ("fullname", "usn", "email", "college_name")
-    list_filter = ("offer_status", "college_name", "timeStamp")
+    list_filter = ("offer_status", "college_name", "timestamp")  # lowercase field

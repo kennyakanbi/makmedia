@@ -1,3 +1,5 @@
+# settings.py
+
 from pathlib import Path
 import os
 from django.core.exceptions import ImproperlyConfigured
@@ -22,21 +24,19 @@ if not SECRET_KEY:
         raise ImproperlyConfigured("SECRET_KEY environment variable is required in production")
 
 # ------------------------------
-# Hosts & CSRF
+# Allowed Hosts & CSRF
 # ------------------------------
-ALLOWED_HOSTS = [
-    h.strip() for h in os.environ.get(
-        "ALLOWED_HOSTS",
-        "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app"
-    ).split(",") if h.strip()
-]
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,makmedia-production.up.railway.app,generous-vitality.up.railway.app,www.makmedia.tech"
+).split(",")
 
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{h}" for h in ALLOWED_HOSTS if not h.startswith("127.") and not h.startswith("localhost")
+    f"https://{h.strip()}" for h in ALLOWED_HOSTS if h and not h.startswith("127.") and not h.startswith("localhost")
 ]
 
 # ------------------------------
-# Security & SSL (Railway)
+# Security & SSL (Production)
 # ------------------------------
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
@@ -49,15 +49,30 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
 
 # ------------------------------
-# Database
+# Database (robust handling)
 # ------------------------------
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=not DEBUG,
-    )
-}
+DB_URL = os.environ.get("DATABASE_URL")
+
+if DB_URL:
+    # Parse URL and build DB config.
+    # dj_database_url will return a dict usable by Django.
+    # Force SSL in non-debug to satisfy managed Postgres providers.
+    default_db = dj_database_url.parse(DB_URL, conn_max_age=600)
+    if not DEBUG:
+        # Ensure SSL (some providers require sslmode)
+        default_db.setdefault("OPTIONS", {})
+        # psycopg expects 'sslmode' string
+        default_db["OPTIONS"].setdefault("sslmode", "require")
+    DATABASES = {"default": default_db}
+else:
+    # Local development fallback (keeps current local SQLite behaviour)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
 
 # ------------------------------
 # Installed Apps
@@ -120,22 +135,41 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ------------------------------
-# Media files
+# Media files (dev vs production, toggleable)
 # ------------------------------
-if DEBUG:
-    # Local media in development
-    MEDIA_URL = "/media/"
-    MEDIA_ROOT = BASE_DIR / "media"
-    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-else:
-    # Cloudinary storage in production
-    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-    MEDIA_URL = "/media/"  # optional, Cloudinary generates its own URLs
+USE_CLOUDINARY = os.environ.get("USE_CLOUDINARY", "False").lower() in ("1", "true", "yes")
 
-# Automatically configure Cloudinary if in production
-if not DEBUG:
-    import cloudinary
-    cloudinary.config()  # Reads CLOUDINARY_URL env variable
+MEDIA_URL = "/media/"
+
+if USE_CLOUDINARY:
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+        "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+        "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+        # optional folder prefix:
+        # "FOLDER": os.environ.get("CLOUDINARY_FOLDER", "makmedia"),
+    }
+
+    # Ensure Django's STORAGES mapping uses Cloudinary for the default alias.
+    # This is required on newer Django versions that prefer STORAGES over DEFAULT_FILE_STORAGE.
+    STORAGES = {
+        "default": {"BACKEND": DEFAULT_FILE_STORAGE},
+        # Keep staticfiles using existing staticfiles backend (WhiteNoise)
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    }
+
+else:
+    # Local filesystem for media during development
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    MEDIA_ROOT = BASE_DIR / "media"
+
+    # Explicit STORAGES for consistency (local)
+    STORAGES = {
+        "default": {"BACKEND": DEFAULT_FILE_STORAGE},
+        "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+    }
 
 # ------------------------------
 # Internationalization
@@ -145,6 +179,9 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# ------------------------------
+# Default primary key & messages
+# ------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MESSAGES_TAGS = {messages.ERROR: "danger"}
 APPEND_SLASH = True
