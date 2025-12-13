@@ -70,25 +70,22 @@ class Blog(models.Model):
         return slug_candidate
 
     def save(self, *args, **kwargs):
-        # Ensure unique slug on first save (or if slug cleared)
         if not self.slug:
             self.slug = self._generate_unique_slug()
         super().save(*args, **kwargs)
 
-
-@property
-def image_url(self):
-    """
-    Return a usable URL for the featured image.
-    Works with MEDIA in dev/production. Falls back to a placeholder.
-    """
-    if self.image:
-        try:
-            return self.image.url  # This uses MEDIA_URL
-        except Exception:
-            pass
-    return "/static/assets/img/default.jpg"
-
+    @property
+    def image_url(self):
+        """
+        Return a usable URL for the featured image.
+        Works with MEDIA in dev/production. Falls back to a placeholder.
+        """
+        if self.image:
+            try:
+                return self.image.url  # Uses MEDIA_URL or Cloudinary URL
+            except Exception:
+                pass
+        return "/static/assets/img/default.jpg"
 
 
 class BlogImage(models.Model):
@@ -104,17 +101,18 @@ class BlogImage(models.Model):
     def __str__(self):
         return f"Image for {self.blog.title}"
 
-@property
-def url(self):
-    """
-    Return a usable URL for extra images.
-    """
-    if self.image:
-        try:
-            return self.image.url
-        except Exception:
-            pass
-    return "/static/assets/img/default.jpg"
+    @property
+    def url(self):
+        """
+        Return a usable URL for extra images.
+        Works with MEDIA in dev/production. Falls back to a placeholder.
+        """
+        if self.image:
+            try:
+                return self.image.url
+            except Exception:
+                pass
+        return "/static/assets/img/default.jpg"
 
 
 # Delete old files when replacing an image (Blog)
