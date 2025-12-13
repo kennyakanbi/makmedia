@@ -1,4 +1,7 @@
+# myapp/models.py
 import os
+import uuid
+from pathlib import Path
 from django.db import models
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -7,19 +10,24 @@ from django.core.files.storage import default_storage
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
-# =========================
-# UTILITY FUNCTION FOR IMAGE UPLOAD
-# =========================
+# Helper to store uploaded images under blog_images/ with a UUID filename
+def upload_to_uuid(instance, filename):
+    ext = filename.split(".")[-1] if "." in filename else ""
+    new_filename = f"{uuid.uuid4().hex}{('.' + ext) if ext else ''}"
+    return f"blog_images/{new_filename}"
+
+# compatibility helper required by older migrations
 def upload_to_original(instance, filename):
     """
-    Preserve original filename without adding automatic timestamp.
+    Kept for backwards-compatibility with older migrations that reference
+    `myapp.models.upload_to_original`. Delegates to the UUID-based uploader so
+    we avoid collisions while remaining importable for migrations.
     """
-    return f"blog_images/{filename}"
+    ext = filename.split(".")[-1] if "." in filename else ""
+    new_filename = f"{uuid.uuid4().hex}{('.' + ext) if ext else ''}"
+    return f"blog_images/{new_filename}"
 
 
-# =========================
-# CONTACT MODEL
-# =========================
 class Contact(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -34,19 +42,16 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.email}"
+ 
 
-
-# =========================
-# BLOG MODEL
-# =========================
 class Blog(models.Model):
     title = models.CharField(max_length=150)
     slug = models.SlugField(unique=True, blank=True, null=True)
-    description = models.TextField()
-    content = models.TextField()
-    author_name = models.CharField(max_length=50)
+    description = models.TextField(blank=True)
+    content = models.TextField(blank=True)
+    author_name = models.CharField(max_length=50, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to="blog_images/", blank=True, null=True)
+    image = models.ImageField(upload_to=upload_to_uuid, blank=True, null=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -56,38 +61,57 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
 
+    def _generate_unique_slug(self):
+        base = slugify(self.title) or uuid.uuid4().hex[:8]
+        slug_candidate = base
+        counter = 1
+        while Blog.objects.filter(slug=slug_candidate).exclude(pk=self.pk).exists():
+            slug_candidate = f"{base}-{counter}"
+            counter += 1
+        return slug_candidate
+
     def save(self, *args, **kwargs):
+        # Ensure unique slug on first save (or if slug cleared)
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = self._generate_unique_slug()
         super().save(*args, **kwargs)
 
     @property
     def image_url(self):
-        if self.image:
+        """
+        Return a usable URL for the featured image that works with local or remote storage.
+        Fallback to static placeholder when missing.
+        """
+        if self.image and getattr(self.image, "name", None):
             try:
                 if default_storage.exists(self.image.name):
                     return default_storage.url(self.image.name)
             except Exception:
+                # Storage may be unavailable or raise for remote storage — fall back
                 pass
             return static(f"media/{self.image.name}")
         return static("assets/img/default.jpg")
 
 
-# =========================
-# BLOG IMAGE MODEL
-# =========================
 class BlogImage(models.Model):
     blog = models.ForeignKey(Blog, related_name="extra_images", on_delete=models.CASCADE)
+    title = models.CharField(max_length=200, default="Untitled", blank=True)
     caption = models.CharField(max_length=150, blank=True, null=True)
-    title = models.CharField(max_length=200, default="Untitled")
-    image = models.ImageField(upload_to=upload_to_original, blank=True, null=True)
+    image = models.ImageField(upload_to=upload_to_uuid, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Blog Extra Image"
+        verbose_name_plural = "Blog Extra Images"
 
     def __str__(self):
         return f"Image for {self.blog.title}"
 
     @property
     def url(self):
-        if self.image and self.image.name:
+        """
+        Return a usable URL for this extra image (prefers storage, falls back to static).
+        """
+        if self.image and getattr(self.image, "name", None):
             try:
                 if default_storage.exists(self.image.name):
                     return default_storage.url(self.image.name)
@@ -97,23 +121,24 @@ class BlogImage(models.Model):
         return static("assets/img/default.jpg")
 
 
-# Automatically delete old files when replacing
-@receiver(pre_save, sender=BlogImage)
-def auto_delete_old_file(sender, instance, **kwargs):
+# Delete old files when replacing an image (Blog)
+@receiver(pre_save, sender=Blog)
+def auto_delete_old_blog_image(sender, instance, **kwargs):
     if not instance.pk:
         return
     try:
-        old_file = BlogImage.objects.get(pk=instance.pk).image
-    except BlogImage.DoesNotExist:
+        old = Blog.objects.get(pk=instance.pk).image
+    except Blog.DoesNotExist:
         return
-    new_file = instance.image
-    if old_file and old_file != new_file and default_storage.exists(old_file.name):
-        default_storage.delete(old_file.name)
+    new = instance.image
+    if old and old != new:
+        try:
+            if default_storage.exists(old.name):
+                default_storage.delete(old.name)
+        except Exception:
+            # If storage deletion fails, ignore (we don't want crashes on save)
+            pass
 
-
-# =========================
-# INTERNSHIP MODEL
-# =========================
 class Internship(models.Model):
     fullname = models.CharField(max_length=60)
     usn = models.CharField(max_length=60, unique=True)
@@ -135,3 +160,4 @@ class Internship(models.Model):
 
     def __str__(self):
         return f"{self.fullname} ({self.usn})"
+

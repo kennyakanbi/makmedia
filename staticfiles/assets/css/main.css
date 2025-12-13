@@ -695,6 +695,25 @@ h6 {
   }
 }
 
+.blog-content p {
+  text-align: justify;
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
+
+.blog-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .blog-content p {
+    text-align: left;
+  }
+}
+
 /*--------------------------------------------------------------
 # Global Page Titles & Breadcrumbs
 --------------------------------------------------------------*/

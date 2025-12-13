@@ -13,12 +13,8 @@ def home(request):
 
 
 def blog_list(request):
-    """
-    Display a list of all blog posts.
-    """
-    posts = Blog.objects.all().order_by('-created_at')  # latest first
-    return render(request, "blog_list.html", {"posts": posts})
-
+    blogs = Blog.objects.all()
+    return render(request, "blog_list.html", {"blogs": blogs})
 
 
 def blog_detail(request, slug):

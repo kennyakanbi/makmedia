@@ -3,117 +3,86 @@
 
 {% block title %}{{ post.title }}{% endblock title %}
 
+{% block meta %}
+<!-- SEO Meta Tags -->
+<meta name="description" content="{{ post.content|striptags|truncatewords:25 }}">
+<meta name="keywords" content="Mak Media Tech, blog, media, advertising, technology">
+
+<!-- Open Graph -->
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.content|striptags|truncatewords:30 }}">
+{% if post.image %}
+<meta property="og:image" content="{{ request.build_absolute_uri }}{{ post.image.url }}">
+{% endif %}
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% endblock meta %}
+
 {% block body %}
-<div class="container mt-5">
-    <div class="row">
-        <!-- Main Content -->
-        <div class="col-lg-8">
-            <div class="card shadow-sm mb-4">
-                <!-- Featured Image -->
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" class="card-img-top img-fluid rounded" alt="{{ post.title }}">
-                {% else %}
-                    <img src="{% static 'assets/img/default-blog.png' %}" class="card-img-top img-fluid rounded" alt="Default Blog">
-                {% endif %}
+<div class="container py-5">
 
-                <div class="card-body">
-                    <!-- Back Button -->
-                    <a href="{% url 'blog_list' %}" class="btn btn-outline-primary btn-sm mb-3">&larr; Back to Blog List</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-9 col-md-12">
 
-                    <!-- Title -->
-                    <h1 class="card-title mb-3">{{ post.title }}</h1>
+            <!-- Blog Header -->
+            <h1 class="fw-bold mb-3">{{ post.title }}</h1>
+            <p class="text-muted mb-4">
+                Published on {{ post.created_at|date:"F d, Y" }}
+            </p>
 
-                    <!-- Author Info -->
-                    <div class="d-flex align-items-center mb-4">
-                        <img src="{% static 'assets/img/default-avatar.png' %}" class="rounded-circle me-3" style="width:60px; height:60px; object-fit:cover;" alt="Author">
-                        <div>
-                            <h6 class="mb-0">{{ post.author_name|default:"Mak Media Tech" }}</h6>
-                            <small class="text-muted">{{ post.created_at|date:"F d, Y" }}</small>
-                        </div>
-                    </div>
+            <!-- Blog Content -->
+            <div class="blog-content">
 
-                    <!-- Blog Content -->
-                    <div class="blog-content">
-                        {% for block in content_blocks %}
-                            {% if block.type == "p" %}
-                                <p class="text-justify mb-3">{{ block.text|safe }}</p>
-                            {% elif block.type == "img" %}
-                                <img src="{{ block.image_url }}" class="img-fluid rounded my-3" alt="{{ post.title }}">
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                {% for block in content_blocks %}
+                    {% if block.type == "p" %}
+                        <p>{{ block.text|safe }}</p>
 
-                    <!-- Extra Images Gallery -->
-                    {% if post.extra_images.all %}
-                        <div class="row g-3 my-4">
-                            {% for img in post.extra_images.all %}
-                                <div class="col-md-4 col-6">
-                                    {% if img.image %}
-                                        <img src="{{ img.image.url }}" class="img-fluid rounded" alt="{{ img.caption|default:post.title }}">
-                                        {% if img.caption %}
-                                            <small class="text-muted">{{ img.caption }}</small>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
+                    {% elif block.type == "img" %}
+                        <figure class="my-4 text-center">
+                            <img 
+                                src="{{ block.image_url }}" 
+                                class="img-fluid rounded"
+                                alt="{{ post.title }}"
+                            >
+                        </figure>
                     {% endif %}
+                {% endfor %}
 
-                    <!-- Social Share Buttons -->
-                    <div class="d-flex gap-2 my-4 flex-wrap">
-                        <a href="https://facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-primary btn-sm">
-                            Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-info btn-sm text-white">
-                            Twitter
-                        </a>
-                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-secondary btn-sm">
-                            LinkedIn
-                        </a>
-                    </div>
+            </div>
 
-                    <!-- Next/Previous Navigation -->
-                    <div class="d-flex justify-content-between my-4 flex-wrap">
-                        {% if prev_post %}
-                            <a href="{% url 'blog_detail' slug=prev_post.slug %}" class="btn btn-outline-secondary btn-sm mb-2">
-                                &larr; {{ prev_post.title|truncatechars:50 }}
-                            </a>
-                        {% else %}
-                            <span></span>
-                        {% endif %}
+            <!-- Social Share -->
+            <div class="mt-5 pt-4 border-top">
+                <h6 class="fw-bold mb-3">Share this article</h6>
+                <div class="d-flex gap-3">
 
-                        {% if next_post %}
-                            <a href="{% url 'blog_detail' slug=next_post.slug %}" class="btn btn-outline-secondary btn-sm mb-2">
-                                {{ next_post.title|truncatechars:50 }} &rarr;
-                            </a>
-                        {% else %}
-                            <span></span>
-                        {% endif %}
-                    </div>
+                    <a href="https://wa.me/?text={{ post.title }} {{ request.build_absolute_uri }}" 
+                       class="btn btn-success btn-sm" target="_blank">
+                        WhatsApp
+                    </a>
+
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" 
+                       class="btn btn-dark btn-sm" target="_blank">
+                        X
+                    </a>
+
+                    <a href="https://facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                       class="btn btn-primary btn-sm" target="_blank">
+                        Facebook
+                    </a>
+
                 </div>
             </div>
-        </div>
 
-        <!-- Sidebar: Recent Posts -->
-        <div class="col-lg-4 mt-4 mt-lg-0">
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-title">Recent Posts</h6>
-                    <ul class="list-unstyled mb-0">
-                        {% for p in recent_posts %}
-                            <li class="mb-2">
-                                <a href="{% url 'blog_detail' slug=p.slug %}" class="text-decoration-none">
-                                    <strong>{{ p.title|truncatechars:60 }}</strong>
-                                </a>
-                                <div class="small text-muted">{{ p.created_at|date:"M d, Y" }}</div>
-                            </li>
-                        {% empty %}
-                            <li class="text-muted small">No recent posts yet.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
         </div>
     </div>
+
 </div>
 {% endblock body %}
+
+<style>
+.blog-content p {
+    text-align: justify;
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+}
+</style>
