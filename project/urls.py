@@ -11,8 +11,5 @@ urlpatterns = [
     path('', include('myapp.urls')),
     path('auth/', include('main.urls')),
 ]
-
-# Serve media files only in DEBUG/development.
-# Remove this block in production if you're serving media via a webserver or object storage.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

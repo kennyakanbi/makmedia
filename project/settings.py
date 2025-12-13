@@ -1,4 +1,3 @@
-# settings.py
 
 from pathlib import Path
 import os
@@ -133,13 +132,15 @@ TEMPLATES = [
     }
 ]
 
-# ------------------------------
-# Static files (WhiteNoise)
-# ------------------------------
+
+# Static files (CSS, JS, Images)
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Media files (uploads)
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # ------------------------------
 # Media files (dev vs production, toggleable)

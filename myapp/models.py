@@ -1,4 +1,3 @@
-# myapp/models.py
 import os
 import uuid
 from pathlib import Path
@@ -76,21 +75,20 @@ class Blog(models.Model):
             self.slug = self._generate_unique_slug()
         super().save(*args, **kwargs)
 
-    @property
-    def image_url(self):
-        """
-        Return a usable URL for the featured image that works with local or remote storage.
-        Fallback to static placeholder when missing.
-        """
-        if self.image and getattr(self.image, "name", None):
-            try:
-                if default_storage.exists(self.image.name):
-                    return default_storage.url(self.image.name)
-            except Exception:
-                # Storage may be unavailable or raise for remote storage — fall back
-                pass
-            return static(f"media/{self.image.name}")
-        return static("assets/img/default.jpg")
+
+@property
+def image_url(self):
+    """
+    Return a usable URL for the featured image.
+    Works with MEDIA in dev/production. Falls back to a placeholder.
+    """
+    if self.image:
+        try:
+            return self.image.url  # This uses MEDIA_URL
+        except Exception:
+            pass
+    return "/static/assets/img/default.jpg"
+
 
 
 class BlogImage(models.Model):
@@ -106,19 +104,17 @@ class BlogImage(models.Model):
     def __str__(self):
         return f"Image for {self.blog.title}"
 
-    @property
-    def url(self):
-        """
-        Return a usable URL for this extra image (prefers storage, falls back to static).
-        """
-        if self.image and getattr(self.image, "name", None):
-            try:
-                if default_storage.exists(self.image.name):
-                    return default_storage.url(self.image.name)
-            except Exception:
-                pass
-            return static(f"media/{self.image.name}")
-        return static("assets/img/default.jpg")
+@property
+def url(self):
+    """
+    Return a usable URL for extra images.
+    """
+    if self.image:
+        try:
+            return self.image.url
+        except Exception:
+            pass
+    return "/static/assets/img/default.jpg"
 
 
 # Delete old files when replacing an image (Blog)
@@ -138,6 +134,7 @@ def auto_delete_old_blog_image(sender, instance, **kwargs):
         except Exception:
             # If storage deletion fails, ignore (we don't want crashes on save)
             pass
+
 
 class Internship(models.Model):
     fullname = models.CharField(max_length=60)
