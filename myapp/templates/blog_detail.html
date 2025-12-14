@@ -1,88 +1,144 @@
 {% extends "basic.html" %}
 {% load static %}
-
-{% block title %}{{ post.title }}{% endblock title %}
-
-{% block meta %}
-<!-- SEO Meta Tags -->
-<meta name="description" content="{{ post.content|striptags|truncatewords:25 }}">
-<meta name="keywords" content="Mak Media Tech, blog, media, advertising, technology">
-
-<!-- Open Graph -->
-<meta property="og:title" content="{{ post.title }}">
-<meta property="og:description" content="{{ post.content|striptags|truncatewords:30 }}">
-{% if post.image %}
-<meta property="og:image" content="{{ request.build_absolute_uri }}{{ post.image.url }}">
-{% endif %}
-<meta property="og:type" content="article">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-{% endblock meta %}
+{% block title %}{{ post.title }}{% endblock %}
 
 {% block body %}
-<div class="container py-5">
+<div class="container my-5">
+    <div class="row g-5">
 
-    <div class="row justify-content-center">
-        <div class="col-lg-9 col-md-12">
+        <!-- ================= MAIN CONTENT ================= -->
+        <div class="col-12 col-lg-8">
+            <!-- Title -->
+            <h1 class="blog-title mb-3">{{ post.title }}</h1>
 
-            <!-- Blog Header -->
-            <h1 class="fw-bold mb-3">{{ post.title }}</h1>
-            <p class="text-muted mb-4">
-                Published on {{ post.created_at|date:"F d, Y" }}
-            </p>
+            <!-- Meta -->
+            <div class="blog-meta mb-4">
+                <span>By {{ post.author_name|default:"Admin" }}</span>
+                <span class="mx-2">•</span>
+                <span>{{ post.created_at|date:"F j, Y" }}</span>
+            </div>
+
+            <!-- Featured Image -->
+            {% if post.image %}
+            <div class="featured-image mb-5">
+                <img src="{{ post.image_url }}" alt="{{ post.title }}">
+            </div>
+            {% endif %}
 
             <!-- Blog Content -->
-            <div class="blog-content">
-
-                {% for block in content_blocks %}
-                    {% if block.type == "p" %}
-                        <p>{{ block.text|safe }}</p>
-
-                    {% elif block.type == "img" %}
-                        <figure class="my-4 text-center">
-                            <img 
-                                src="{{ block.image_url }}" 
-                                class="img-fluid rounded"
-                                alt="{{ post.title }}"
-                            >
-                        </figure>
-                    {% endif %}
-                {% endfor %}
-
+           <article class="blog-content">
+    {% for block in content_blocks %}
+        {% if block.type == "p" %}
+            <p>{{ block.text|linebreaksbr }}</p>
+        {% elif block.type == "img" %}
+            <div class="image-block my-4">
+                <img src="{{ block.image_url }}" alt="Blog image">
+                {% if block.caption %}
+                    <div class="image-caption">{{ block.caption }}</div>
+                {% endif %}
             </div>
+        {% endif %}
+    {% endfor %}
+</article>
 
-            <!-- Social Share -->
-            <div class="mt-5 pt-4 border-top">
-                <h6 class="fw-bold mb-3">Share this article</h6>
-                <div class="d-flex gap-3">
 
-                    <a href="https://wa.me/?text={{ post.title }} {{ request.build_absolute_uri }}" 
-                       class="btn btn-success btn-sm" target="_blank">
-                        WhatsApp
-                    </a>
-
-                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" 
-                       class="btn btn-dark btn-sm" target="_blank">
-                        X
-                    </a>
-
-                    <a href="https://facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
-                       class="btn btn-primary btn-sm" target="_blank">
-                        Facebook
-                    </a>
-
-                </div>
+            <!-- Prev / Next (Mobile View) -->
+            <div class="d-lg-none mt-5">
+                {% if prev_post %}
+                    <a href="{% url 'blog_detail' slug=prev_post.slug %}" class="nav-post">← {{ prev_post.title|truncatechars:45 }}</a>
+                {% endif %}
+                {% if next_post %}
+                    <a href="{% url 'blog_detail' slug=next_post.slug %}" class="nav-post text-end">{{ next_post.title|truncatechars:45 }} →</a>
+                {% endif %}
             </div>
-
         </div>
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="col-12 col-lg-4 blog-sidebar">
+            <div class="sidebar-card">
+                <h5>Continue Reading</h5>
+                {% if prev_post %}
+                    <a href="{% url 'blog_detail' slug=prev_post.slug %}" class="sidebar-link">← {{ prev_post.title|truncatechars:50 }}</a>
+                {% endif %}
+                {% if next_post %}
+                    <a href="{% url 'blog_detail' slug=next_post.slug %}" class="sidebar-link">{{ next_post.title|truncatechars:50 }} →</a>
+                {% endif %}
+            </div>
+
+            <div class="sidebar-card mt-4">
+                <h5>Recent Posts</h5>
+                <ul class="recent-posts">
+                    {% for recent in recent_posts %}
+                        <li><a href="{% url 'blog_detail' slug=recent.slug %}">{{ recent.title|truncatechars:55 }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
     </div>
-
 </div>
-{% endblock body %}
 
+
+
+<!-- ================= STICKY SOCIAL BUTTONS ================= -->
+<div class="sticky-social">
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}" target="_blank" class="btn btn-twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}" target="_blank" class="btn btn-linkedin"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://api.whatsapp.com/send?text={{ post.title }}%20{{ request.build_absolute_uri }}" target="_blank" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<!-- ================= CUSTOM CSS ================= -->
 <style>
-.blog-content p {
-    text-align: justify;
-    line-height: 1.8;
-    margin-bottom: 1.2rem;
+.blog-title { font-weight:700; line-height:1.3; }
+.blog-meta { font-size:0.9rem; color:#777; }
+.featured-image img { width:100%; max-height:450px; object-fit:cover; border-radius:1rem; }
+.blog-content p { font-size:1.05rem; line-height:1.85; margin-bottom:1.5rem; text-align:justify; }
+.image-block { text-align:center; margin:2rem 0; }
+.image-block img { max-width:100%; border-radius:0.9rem; box-shadow:0 10px 25px rgba(0,0,0,0.08); }
+.image-caption { font-size:0.85rem; color:#777; margin-top:0.5rem; }
+.blog-sidebar { position:sticky; top:100px; }
+.sidebar-card { background:#fff; padding:1.5rem; border-radius:1rem; box-shadow:0 8px 20px rgba(0,0,0,0.05); }
+.sidebar-card h5 { margin-bottom:1rem; font-weight:600; }
+.sidebar-link { display:block; margin-bottom:0.8rem; text-decoration:none; color:#000; }
+.sidebar-link:hover { color:#0d6efd; }
+.recent-posts { list-style:none; padding:0; margin:0; }
+.recent-posts li { margin-bottom:0.8rem; }
+.recent-posts a { text-decoration:none; color:#000; }
+.recent-posts a:hover { color:#0d6efd; }
+
+/* STICKY SOCIAL BUTTONS */
+.sticky-social {
+    position:fixed;
+    top:40%;
+    left:10px;
+    display:flex;
+    flex-direction:column;
+    gap:0.5rem;
+    z-index:1000;
+}
+.sticky-social a {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    color:#fff;
+    font-size:1.1rem;
+    text-decoration:none;
+}
+.btn-facebook { background:#3b5998; }
+.btn-twitter { background:#1da1f2; }
+.btn-linkedin { background:#0077b5; }
+.btn-whatsapp { background:#25d366; }
+
+@media(max-width:768px) {
+    .sticky-social { left:5px; top:30%; }
+    .blog-content p { line-height:1.55; margin-bottom:0.6rem; text-align:left; }
 }
 </style>
+
+<!-- Include FontAwesome for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

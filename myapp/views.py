@@ -7,6 +7,8 @@ from django.urls import reverse
 import re
 from .models import Blog
 from django.db.models import F, Q
+from django.templatetags.static import static
+
 
 def home(request):
     return render(request, 'home.html')
@@ -17,76 +19,33 @@ def blog_list(request):
     return render(request, "blog_list.html", {"blogs": blogs})
 
 
+
+from django.shortcuts import render, get_object_or_404
+from .models import Blog
+
 def blog_detail(request, slug):
-    """
-    Display a single blog post with paragraphs and extra images.
-    Robust: works if related name is 'extra_images' or the default 'blogimage_set'.
-    """
     post = get_object_or_404(Blog, slug=slug)
 
-    # --- Process content paragraphs ---
-    raw_content = post.content or ""
-    raw_content = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', raw_content, flags=re.DOTALL)
-    paragraphs = [p.strip() for p in re.split(r'\n\s*\n', raw_content) if p.strip()]
-    if not paragraphs:
-        paragraphs = [p.strip() for p in raw_content.splitlines() if p.strip()]
-
-    # --- Get extra images robustly ---
-    extra_images = []
-    if hasattr(post, "extra_images"):
-        try:
-            extra_images = list(post.extra_images.all())
-        except Exception:
-            extra_images = []
-    else:
-        try:
-            extra_images = list(post.blogimage_set.all())
-        except Exception:
-            extra_images = []
-
-    # --- Determine positions for images ---
+    # Split content into paragraphs
     content_blocks = []
-    n_par = len(paragraphs)
-    n_img = len(extra_images)
-    insert_after = []
-    if n_img > 0 and n_par > 0:
-        for i in range(n_img):
-            pos = round((i + 1) * n_par / (n_img + 1))
-            pos = max(1, min(n_par, pos))
-            insert_after.append(pos)
+    if post.content:
+        paragraphs = post.content.split("\n\n")
+        for i, para in enumerate(paragraphs):
+            content_blocks.append({'type': 'p', 'text': para})
 
-    # Build blocks: paragraphs and inline image blocks
-    img_index = 0
-    for i, para in enumerate(paragraphs, start=1):
-        content_blocks.append({"type": "p", "text": para})
-        while img_index < n_img and insert_after and insert_after[img_index] == i:
-            img_obj = extra_images[img_index]
-            image_url = getattr(img_obj.image, "url", None) if img_obj else None
-            if image_url:
-                content_blocks.append({"type": "img", "image_url": image_url})
-            img_index += 1
-
-    while img_index < n_img:
-        img_obj = extra_images[img_index]
-        image_url = getattr(img_obj.image, "url", None) if img_obj else None
-        if image_url:
-            content_blocks.append({"type": "img", "image_url": image_url})
-        img_index += 1
-
-    # --- Recent posts ---
-    recent_posts = Blog.objects.exclude(pk=post.pk).order_by('-created_at')[:5]
-
-    # --- Previous and Next posts ---
-    prev_post = Blog.objects.filter(created_at__lt=post.created_at).order_by('-created_at').first()
-    next_post = Blog.objects.filter(created_at__gt=post.created_at).order_by('created_at').first()
+            # Insert an extra image after every 2 paragraphs (example logic)
+            if i < len(post.extra_images.all()):
+                img = post.extra_images.all()[i]
+                content_blocks.append({'type': 'img', 'image_url': img.url, 'caption': img.caption})
 
     return render(request, "blog_detail.html", {
         "post": post,
         "content_blocks": content_blocks,
-        "recent_posts": recent_posts,
-        "prev_post": prev_post,
-        "next_post": next_post,
+        "recent_posts": Blog.objects.exclude(id=post.id).order_by('-created_at')[:5],
+        "prev_post": Blog.objects.filter(created_at__lt=post.created_at).order_by('-created_at').first(),
+        "next_post": Blog.objects.filter(created_at__gt=post.created_at).order_by('created_at').first(),
     })
+
 
 def about(request):
     return render(request, 'about.html')
