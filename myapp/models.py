@@ -1,20 +1,11 @@
 import uuid
 from django.db import models
+from django.dispatch import receiver
 from django.utils.text import slugify
 from django.templatetags.static import static
-from django.core.files.storage import default_storage
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-
-
-def upload_to_uuid(instance, filename):
-    ext = filename.split(".")[-1] if "." in filename else ""
-    return f"blog_images/{uuid.uuid4().hex}.{ext}"
-
-
-def upload_to_original(instance, filename):
-    return upload_to_uuid(instance, filename)
-
+from cloudinary.models import CloudinaryField
+from django.db.models.signals import post_delete
+from cloudinary.uploader import destroy
 
 class Blog(models.Model):
     title = models.CharField(max_length=150)
@@ -23,7 +14,13 @@ class Blog(models.Model):
     content = models.TextField(blank=True)
     author_name = models.CharField(max_length=50, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to=upload_to_uuid, blank=True, null=True)
+
+    image = CloudinaryField(
+        "image",
+        folder="blog_images",
+        blank=True,
+        null=True
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -44,16 +41,26 @@ class Blog(models.Model):
 
     @property
     def image_url(self):
-        if self.image and default_storage.exists(self.image.name):
+        if self.image:
             return self.image.url
         return static("assets/img/default.jpg")
 
 
 class BlogImage(models.Model):
-    blog = models.ForeignKey(Blog, related_name="extra_images", on_delete=models.CASCADE)
-    title = models.CharField(max_length=200, default="Untitled", blank=True)
-    caption = models.CharField(max_length=150, blank=True, default="")
-    image = models.ImageField(upload_to=upload_to_uuid, blank=True, null=True)
+    blog = models.ForeignKey(
+        Blog,
+        related_name="extra_images",
+        on_delete=models.CASCADE
+    )
+    title = models.CharField(max_length=200, blank=True)
+    caption = models.CharField(max_length=150, blank=True)
+
+    image = CloudinaryField(
+        "image",
+        folder="blog_images",
+        blank=True,
+        null=True
+    )
 
     class Meta:
         verbose_name = "Blog Extra Image"
@@ -65,24 +72,14 @@ class BlogImage(models.Model):
     @property
     def url(self):
         if self.image:
-            try:
-                return self.image.url
-            except Exception:
-                pass
-        return "/static/assets/img/default.jpg"
+            return self.image.url
+        return static("assets/img/default.jpg")
 
 
-@receiver(pre_save, sender=Blog)
-def auto_delete_old_blog_image(sender, instance, **kwargs):
-    if not instance.pk:
-        return
-    try:
-        old = Blog.objects.get(pk=instance.pk).image
-        if old and old != instance.image:
-            if default_storage.exists(old.name):
-                default_storage.delete(old.name)
-    except Blog.DoesNotExist:
-        pass
+@receiver(post_delete, sender=Blog)
+def delete_blog_image(sender, instance, **kwargs):
+    if instance.image:
+        destroy(instance.image.public_id)
 
 
 class Contact(models.Model):

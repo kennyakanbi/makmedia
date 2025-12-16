@@ -40,3 +40,9 @@ class InternshipAdmin(admin.ModelAdmin):
     )
     search_fields = ("fullname", "usn", "email", "college_name")
     list_filter = ("offer_status", "college_name", "timestamp")
+
+
+def image_preview(self):
+    if self.image:
+        return mark_safe(f'<img src="{self.image.url}" width="100" />') # type: ignore
+    return "-"

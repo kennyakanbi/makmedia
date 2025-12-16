@@ -143,41 +143,29 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # ------------------------------
-# Media files (dev vs production, toggleable)
+# Media files
 # ------------------------------
-USE_CLOUDINARY = os.environ.get("USE_CLOUDINARY", "False").lower() in ("1", "true", "yes")
-
 MEDIA_URL = "/media/"
+
+USE_CLOUDINARY = not DEBUG
 
 if USE_CLOUDINARY:
     DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
-    CLOUDINARY_STORAGE = {
-        "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
-        "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
-        "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
-        # optional folder prefix:
-        # "FOLDER": os.environ.get("CLOUDINARY_FOLDER", "makmedia"),
-    }
-
-    # Ensure Django's STORAGES mapping uses Cloudinary for the default alias.
-    # This is required on newer Django versions that prefer STORAGES over DEFAULT_FILE_STORAGE.
     STORAGES = {
-        "default": {"BACKEND": DEFAULT_FILE_STORAGE},
-        # Keep staticfiles using existing staticfiles backend (WhiteNoise)
+        "default": {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"},
         "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
     }
 
 else:
-    # Local filesystem for media during development
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
     MEDIA_ROOT = BASE_DIR / "media"
 
-    # Explicit STORAGES for consistency (local)
     STORAGES = {
-        "default": {"BACKEND": DEFAULT_FILE_STORAGE},
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
         "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
     }
+
 
 # ------------------------------
 # Internationalization
