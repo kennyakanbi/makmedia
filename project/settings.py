@@ -30,11 +30,11 @@ if env_hosts:
     ALLOWED_HOSTS = [h.strip() for h in env_hosts.split(",") if h.strip()]
 else:
     ALLOWED_HOSTS = [
-        "127.0.0.1",
-        "localhost",
-        "makmedia-production.up.railway.app",
-        "generous-vitality.up.railway.app",
-        "www.makmedia.tech",
+    "makmedia.tech",
+    "www.makmedia.tech",
+    ".up.railway.app",
+    "localhost",
+    "127.0.0.1",
     ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -53,6 +53,7 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
 
 # ------------------------------
 # Database (robust handling)
