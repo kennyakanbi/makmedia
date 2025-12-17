@@ -62,9 +62,12 @@ class BlogImage(models.Model):
         null=True
     )
 
+    position = models.PositiveIntegerField(default=0)
+
     class Meta:
         verbose_name = "Blog Extra Image"
         verbose_name_plural = "Blog Extra Images"
+        ordering = ["position"]
 
     def __str__(self):
         return f"Image for {self.blog.title}"
