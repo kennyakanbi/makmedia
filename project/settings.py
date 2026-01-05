@@ -163,3 +163,6 @@ MESSAGES_TAGS = {
 # =========================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APPEND_SLASH = True
+
+
+print("ALLOWED_HOSTS LOADED:", ALLOWED_HOSTS)
